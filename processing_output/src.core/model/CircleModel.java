@@ -1,16 +1,14 @@
-import processing.core.*;
+package model;
 
-
-public class CircleModel {
+public class CircleModel implements IModel {
 
 	private static final float DEFAULT_GROWTH_FACTOR = 1.5f;
 
-	int centerX, centerY;
-	float radius;
-	PApplet p;
-
-	public CircleModel(int centerX, int centerY, float raduis, PApplet p) {
-		this.p = p;
+	public int centerX;
+	public int centerY;
+	public float radius;
+	
+	public CircleModel(int centerX, int centerY, float raduis) {
 		this.centerX = centerX;
 		this.centerY = centerY;
 		this.radius = raduis;
@@ -29,13 +27,11 @@ public class CircleModel {
 		this.radius = raduis;
 	}
 
-	void grow() {
+	/**
+	 * @see model.IModel#update()
+	 */
+	@Override
+	public void update() {
 		this.radius += DEFAULT_GROWTH_FACTOR;
-	}
-
-	void display() {
-		if (radius < 2 * p.width) {
-			p.ellipse(centerX, centerY, radius, radius);
-		}
 	}
 }
