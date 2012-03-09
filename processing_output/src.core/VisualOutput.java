@@ -12,6 +12,8 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final int STAGE_WIDTH = 700;
+	private static final int STAGE_HEIGHT = 500;
 
 	IController mainController;
 
@@ -24,16 +26,16 @@ public class VisualOutput extends PApplet {
 
 	public void setup() {
 
+		size(STAGE_WIDTH, STAGE_HEIGHT);
+		noFill();
+		strokeWeight(5);
+		stroke(0, 0, 0, 255);
+		ellipseMode(CENTER);
+
 		MainModel mainModel = new MainModel();
 		MainView mainView = new MainView(this, mainModel);
 		
 		mainController = new MainController(mainModel, mainView);
-		
-		size(500, 350);
-		noFill();
-		strokeWeight(5);
-		stroke(0, 0, 0, 128);
-		ellipseMode(CENTER);
 		
 	}
 

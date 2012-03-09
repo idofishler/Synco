@@ -7,6 +7,7 @@ import model.PersonModel;
 
 public class PersonView extends AbstractView {
 
+	private static final boolean DEBUG = true;
 	ArrayList<CircleView> m_circles;
 	private int centerX;
 	private int centerY;
@@ -20,8 +21,13 @@ public class PersonView extends AbstractView {
 	}
 
 	public void display() {
+		
 		for (CircleView circle : m_circles) {
 			circle.display();
+		}
+		
+		if (DEBUG) {
+			showRates();
 		}
 	}
 	
@@ -56,6 +62,30 @@ public class PersonView extends AbstractView {
 	public void setCenterY(int centerY) {
 		this.centerY = centerY;
 	}
+	
+	public PersonModel getModel() {
+		return (PersonModel) m_model;
+	}
+	
+	private void showRates() {
+		// Display the rate as text
+		int rate = getModel().getHeartRate();
+		int position = getModel().getGamePos();
+		
+		p.fill(0, 0, 0);
+		switch (position) {
+		case 0:
+			p.text(rate, p.width - 20, 10);
+			break;
+		case 1:
+			p.text(rate, 10, 10);
+			break;
+		default:
+			break;
+		}
+		p.noFill();
+	}
+
 	
 	// TOOD: fix java.util.ConcurrentModificationException
 //	private void removeInvisibleShapse() {

@@ -4,15 +4,22 @@ import java.util.ArrayList;
 
 public class PersonModel implements IModel {
 
+	private static final int BEATS_TO_STORE = 5;
+
 	private String name;
 	private int heartRate;
 	private float HRV;
 	private float pulseStrangth;
 	private int gamePos;
 
+	private ArrayList<Double> timeBetweenBeats;
+	double lastBeat;
+
 	private ArrayList<CircleModel> circles;
 	private int centerX;
-	private int centerY; 
+	private int centerY;
+
+	private boolean ready;
 
 	/**
 	 * @param name
@@ -20,13 +27,40 @@ public class PersonModel implements IModel {
 	public PersonModel(int pos) {
 		this.name = "player" + pos;
 		gamePos = pos;
+		this.ready = false;
+
 		this.circles = new ArrayList<CircleModel>();
+
+		timeBetweenBeats = new ArrayList<Double>();
+		lastBeat = 0;
 	}
 
+
+
+
+	@Override
+	public void update() {
+		for (CircleModel circle : circles) {
+			circle.update();
+		}
+	}
+
+
+
+
 	public CircleModel pulse() {
+		beat();
 		CircleModel circleModel = new CircleModel(centerX, centerY, 0);
 		circles.add(circleModel);
 		return circleModel;
+	}
+
+	public void beat() {
+		timeBetweenBeats.add(System.currentTimeMillis() - lastBeat);
+		lastBeat = System.currentTimeMillis();
+	
+		if (timeBetweenBeats.size() > BEATS_TO_STORE) 
+			timeBetweenBeats.remove(0);
 	}
 
 	/**
@@ -96,6 +130,16 @@ public class PersonModel implements IModel {
 	 * @return the heartRate
 	 */
 	public int getHeartRate() {
+
+		double total = 0;
+
+		for (double t : timeBetweenBeats) {
+			total += t;
+		}
+
+		double average = total / timeBetweenBeats.size();
+		heartRate = (int) (60 / (average / 1000));
+
 		return heartRate;
 	}
 
@@ -134,10 +178,24 @@ public class PersonModel implements IModel {
 		this.pulseStrangth = pulseStrangth;
 	}
 
-	@Override
-	public void update() {
-		for (CircleModel circle : circles) {
-			circle.update();
-		}
+	/**
+	 * @return the lastBeat
+	 */
+	public double getLastBeat() {
+		return lastBeat;
+	}
+
+	public void start() {
+		this.ready = true;
+	}
+
+
+
+
+	/**
+	 * @return the ready
+	 */
+	public boolean isReady() {
+		return ready;
 	}
 }

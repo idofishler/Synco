@@ -22,18 +22,4 @@ public abstract class AbstractView implements IView {
 		this.p = p;
 		m_model = model;
 	}
-	
-	
-	/**
-	 * @see view.IView#display()
-	 */
-	/* (non-Javadoc)
-	 * @see view.IView#display()
-	 */
-	@Override
-	public void display() {
-		// TODO Auto-generated method stub
-
-	}
-
 }
