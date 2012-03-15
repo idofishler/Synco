@@ -30,6 +30,7 @@ public class MainView extends AbstractView {
 		for (int i = 0; i < MainModel.NO_OF_PLAYERS; i++) {
 			players[i] = new PersonView(p, playerModels[i]);
 		}
+		
 	}
 	
 	public void display() {

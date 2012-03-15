@@ -8,6 +8,8 @@ import view.MainView;
 
 public class MainController extends AbstractController {
 
+	public static final boolean DEBUG = true;
+
 	public MainController(IModel model, IView view) {
 		super(model, view);
 		getView().initPlayers();

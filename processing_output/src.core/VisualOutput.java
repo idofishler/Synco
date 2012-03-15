@@ -1,10 +1,10 @@
 
 import model.MainModel;
 import processing.core.PApplet;
+import processing.serial.Serial;
 import view.MainView;
 import controller.IController;
 import controller.MainController;
-import processing.serial.*;
 
 
 public class VisualOutput extends PApplet {
@@ -15,6 +15,8 @@ public class VisualOutput extends PApplet {
 	private static final long serialVersionUID = 1L;
 	private static final int STAGE_WIDTH = 700;
 	private static final int STAGE_HEIGHT = 500;
+	
+	private static final boolean ARDUINO_INPUT_ON = false;
 
 	IController mainController;
 	Serial port;
@@ -23,16 +25,18 @@ public class VisualOutput extends PApplet {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PApplet.main(new String[] { "--present", "VisualOutput" });
+		PApplet.main(new String[] {  "--present", "VisualOutput" });
 	}
 
 	public void setup() {
 
-		initSirialPort();
+		if (ARDUINO_INPUT_ON) {
+			initSirialPort();
+		}
 
 		size(STAGE_WIDTH, STAGE_HEIGHT);
 		noFill();
-		strokeWeight(5);
+		strokeWeight(3);
 		stroke(0, 0, 0, 255);
 		ellipseMode(CENTER);
 
@@ -50,7 +54,9 @@ public class VisualOutput extends PApplet {
 	}
 
 	public void draw() {
-		CheckSerialEvent();
+		if (ARDUINO_INPUT_ON) {
+			CheckSerialEvent();			
+		}
 		mainController.doUI();
 	}
 
@@ -76,5 +82,20 @@ public class VisualOutput extends PApplet {
 			mainController.event(1);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#mouseClicked()
+	 */
+	@Override
+	public void mouseClicked() {
+		if (mouseButton == RIGHT) {
+			mainController.event(0);
+		}
+		if (mouseButton == LEFT) {
+			mainController.event(1);
+		}
+	}
+	
+	
 }
 

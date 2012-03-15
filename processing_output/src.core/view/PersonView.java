@@ -1,16 +1,19 @@
 package view;
 
 import java.util.ArrayList;
+
+import controller.MainController;
 import processing.core.*;
 import model.CircleModel;
 import model.PersonModel;
 
 public class PersonView extends AbstractView {
 
-	private static final boolean DEBUG = true;
 	ArrayList<CircleView> m_circles;
 	private int centerX;
 	private int centerY;
+	private PImage heartImage;
+	private int pulseIndicatorRate = 24;
 	
 	/**
 	 * @param personModel
@@ -18,17 +21,23 @@ public class PersonView extends AbstractView {
 	public PersonView(PApplet p, PersonModel personModel) {
 		super(p, personModel);
 		m_circles = new ArrayList<CircleView>();
+		setCenterX(personModel.getCenterX());
+		setCenterY(personModel.getCenterY());
+		heartImage = p.loadImage("/resourse/heart.jpg");
 	}
 
 	public void display() {
 		
+		drawHeart();
+
 		for (CircleView circle : m_circles) {
 			circle.display();
 		}
 		
-		if (DEBUG) {
+		if (MainController.DEBUG) {
 			showRates();
 		}
+		
 	}
 	
 	public void addViewableCircle(CircleModel circleModel) {
@@ -70,22 +79,39 @@ public class PersonView extends AbstractView {
 	private void showRates() {
 		// Display the rate as text
 		int rate = getModel().getHeartRate();
-		int position = getModel().getGamePos();
 		
 		p.fill(0, 0, 0);
-		switch (position) {
-		case 0:
-			p.text(rate, p.width - 20, 10);
-			break;
-		case 1:
-			p.text(rate, 10, 10);
-			break;
-		default:
-			break;
+		
+		if (getCenterX() > p.width / 2) {
+			p.text(rate, p.width - 35, 10);
+		} else {
+			p.text(rate, 25, 10);			
 		}
 		p.noFill();
 	}
-
+	
+	public void waitForPlayer() {
+		
+	}
+	
+	private void drawHeart() {
+		if (!getModel().isReady()) {
+			p.image(heartImage, centerX-75, centerY-75, 150, 150);			
+		} else if (getModel().isReady()) {
+			if (getCenterX() > p.width / 2) {
+				p.image(heartImage, p.width - 20, 0, 20, 20);
+				if (--pulseIndicatorRate > 0 && pulseIndicatorRate < 10) {
+					p.image(heartImage, p.width - 23, 0, 23, 23);
+				}
+			} else {
+				p.image(heartImage, 0, 0, 20, 20);
+				if (--pulseIndicatorRate > 0 && pulseIndicatorRate < 10) {
+					p.image(heartImage, 0, 0, 23, 23);
+				}
+			}
+			if (pulseIndicatorRate == 0) pulseIndicatorRate = 34;
+		}
+	}
 	
 	// TOOD: fix java.util.ConcurrentModificationException
 //	private void removeInvisibleShapse() {
