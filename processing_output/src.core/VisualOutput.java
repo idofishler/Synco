@@ -13,8 +13,8 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int STAGE_WIDTH = 300;
-	private static final int STAGE_HEIGHT = 300;
+	private static final int STAGE_WIDTH = 512;
+	private static final int STAGE_HEIGHT = 512;
 	
 	private static final boolean ARDUINO_INPUT_ON = false;
 
@@ -34,15 +34,12 @@ public class VisualOutput extends PApplet {
 			initSirialPort();
 		}
 
-		size(STAGE_WIDTH, STAGE_HEIGHT, P3D);
-		loadPixels();
-		frameRate(3000);
+		size(STAGE_WIDTH, STAGE_HEIGHT);
 
 		MainModel mainModel = new MainModel();
 		MainView mainView = new MainView(this, mainModel);
 
 		mainController = new MainController(mainModel, mainView);
-
 	}
 
 	private void initSirialPort() {

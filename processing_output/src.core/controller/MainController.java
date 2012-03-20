@@ -37,7 +37,7 @@ public class MainController extends AbstractController {
 	}
 
 	public void init() {
-		getView().initPlayers();
+		getView().init();
 	}
 
 

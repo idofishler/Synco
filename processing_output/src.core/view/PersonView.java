@@ -1,11 +1,8 @@
 package view;
 
-import java.util.ArrayList;
-
-import controller.MainController;
-import processing.core.*;
-import model.CircleModel;
 import model.PersonModel;
+import processing.core.PApplet;
+import controller.MainController;
 
 public class PersonView extends AbstractView {
 
@@ -26,7 +23,6 @@ public class PersonView extends AbstractView {
 		if (MainController.DEBUG) {
 			showRates();
 		}
-		
 	}
 	
 	/**

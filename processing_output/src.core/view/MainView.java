@@ -14,14 +14,17 @@ public class MainView extends AbstractView {
 	 */
 	public MainView(PApplet p, MainModel mainModel) {
 		super(p, mainModel);
-
+		
+		// Start the water view
+		waterView = new WaterView(p, getModel().getWaterModel());
 	}
 
 	public void initPlayers() {
 
 		// Set the player position (in the model)
-		getModel().setPersonPos(0, p.width - (p.width / 4), p.height / 2);
-		getModel().setPersonPos(1, p.width / 4, p.height / 2);
+		for (int i = 0; i < MainModel.NO_OF_PLAYERS; i++) {
+			getModel().setPersonPos(i, p.width, p.height);
+		}
 
 		// init the PersonView[] from these PersonModels
 		PersonModel[] playerModels = getModel().getPlayers();
@@ -30,10 +33,6 @@ public class MainView extends AbstractView {
 		for (int i = 0; i < MainModel.NO_OF_PLAYERS; i++) {
 			players[i] = new PersonView(p, playerModels[i]);
 		}
-
-		// Start the water view
-		waterView = new WaterView(p, getModel().getWaterModel());
-
 	}
 
 	public void display() {
@@ -41,6 +40,11 @@ public class MainView extends AbstractView {
 			players[i].display();
 		}
 		waterView.display();
+	}
+	
+	public void init() {
+		initPlayers();
+		waterView.init();
 	}
 
 	/**

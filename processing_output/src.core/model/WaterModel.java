@@ -8,20 +8,21 @@ public class WaterModel implements IModel {
 	public int space;
 	int radius, heightMax, density;
 	public int page = 0;
-	int width, height;
+	int m_width, m_height;
 
-	// the height map is made of two "pages".
-	// one to calculate the current state, and another to keep the previous state.
 	public void initMap(int width, int height) {
-		this.width = width;
-		this.height = height;
+		this.m_width = width;
+		this.m_height = height;
+
+		// the height map is made of two "pages".
+		// one to calculate the current state, and another to keep the previous state.
 		heightMap = new int[2][width][height];
 		line = new int[height];
 		for (int l = 0; l < height; l++) {
 			line[l] = l * width;
 		}
-		density = 7;//5
-		radius = 10;//20
+		density = 5;
+		radius = 20;
 		space = width * height - 1;
 
 		// the turbulence map, is an array to make a smooth turbulence over the height map.
@@ -36,7 +37,8 @@ public class WaterModel implements IModel {
 				squarey = y * y;
 				dist = Math.sqrt(squarex + squarey);
 				if ((squarex) + (squarey) < r) {
-					turbulenceMap[radius + x][radius + y] += (int) (900 * ((float) radius - dist));
+					turbulenceMap[radius + x][radius + y] +=
+						(int) (900 * ((float) radius - dist));
 				}
 			}
 		}
@@ -45,22 +47,20 @@ public class WaterModel implements IModel {
 	// it a kind of image filter, but instead of applying to an image,
 	// we apply it to the height map, that encodes the height of the waves.
 	private void waterFilter() {
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-
+		for (int x = 0; x < m_width; x++) {
+			for (int y = 0; y < m_height; y++) {
 				int n = y - 1 < 0 ? 0 : y - 1;
-				int s = y + 1 > (height) - 1 ? (height) - 1 : y + 1;
-				int e = x + 1 > (width) - 1 ? (width) - 1 : x + 1;
+				int s = y + 1 > (m_height) - 1 ? (m_height) - 1 : y + 1;
+				int e = x + 1 > (m_width) - 1 ? (m_width) - 1 : x + 1;
 				int w = x - 1 < 0 ? 0 : x - 1;
 
-				int value = ((heightMap[page][w][n] + heightMap[page][x][n] + 
-						heightMap[page][e][n] + heightMap[page][w][y] + 
-						heightMap[page][e][y] + heightMap[page][w][s] + 
-						heightMap[page][x][s] + heightMap[page][e][s]) >> 2) - 
+				int value = ((heightMap[page][w][n] + heightMap[page][x][n] +
+						heightMap[page][e][n] + heightMap[page][w][y] +
+						heightMap[page][e][y] + heightMap[page][w][s] +
+						heightMap[page][x][s] + heightMap[page][e][s]) >> 2) -
 						heightMap[page ^ 1][x][y];
 
 				heightMap[page ^ 1][x][y] = value - (value >> density);
-				//   water.set(x,y,value - (value >> density)); //<<-- kick here - do not update water here
 			}
 		}
 	}
@@ -68,18 +68,16 @@ public class WaterModel implements IModel {
 	public void makeTurbulence(int cx, int cy) {
 		int r = radius * radius;
 		int left = cx < radius ? -cx + 1 : -radius;
-		int right = cx > (width - 1) - radius ? (width - 1) - cx : radius;
+		int right = cx > (m_width - 1) - radius ? (m_width - 1) - cx : radius;
 		int top = cy < radius ? -cy + 1 : -radius;
-		int bottom = cy > (height - 1) - radius ? (height - 1) - cy : radius;
+		int bottom = cy > (m_height - 1) - radius ? (m_height - 1) - cy : radius;
 
-
-		for (int x= right;x>left;x--){
+		for (int x = left; x < right; x++) {
 			int xsqr = x * x;
-
-			for (int y=bottom;y>top;y--){
+			for (int y = top; y < bottom; y++) {
 				if ((xsqr) + (y * y) < r)
-					heightMap[page ^ 1][cx + x][cy + y] += turbulenceMap[radius + x][radius + y];
-				//  water.set(x,y,turbulenceMap[radius + x][radius + y]); //<<<-- kick do not update water here
+					heightMap[page ^ 1][cx + x][cy + y] +=
+						turbulenceMap[radius + x][radius + y];
 			}
 		}
 	}

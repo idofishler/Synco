@@ -62,8 +62,18 @@ public class MainModel implements IModel {
 	}
 
 	public void setPersonPos(int index, int x, int y) {
-		getPlayers()[index].setCenterX(x);
-		getPlayers()[index].setCenterY(y);
+		switch (index) {
+		case 0:
+			getPlayers()[index].setCenterX(x - (x / 4));
+			getPlayers()[index].setCenterY(y / 2);
+			break;
+		case 1:
+			getPlayers()[index].setCenterX(x / 4);
+			getPlayers()[index].setCenterY(y / 2);
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void sync() {
