@@ -1,6 +1,5 @@
 package controller;
 
-import model.CircleModel;
 import model.IModel;
 import model.MainModel;
 import view.IView;
@@ -12,31 +11,34 @@ public class MainController extends AbstractController {
 
 	public MainController(IModel model, IView view) {
 		super(model, view);
-		getView().initPlayers();
+		init();
 	}
 
 	@Override
 	public void event(int identifier) {
-		CircleModel circleModel = 
-			getModel().getPlayers()[identifier].pulse();
-		
+
+		getModel().getPlayers()[identifier].pulse();
+
 		// start the player with the first pulse
 		getModel().startPlayer(identifier);
-		
-		getView().getPlayers()[identifier].addViewableCircle(circleModel);
+
+		// this long line is making the water move where the player center is at
+		getModel().getWaterModel().
+		makeTurbulence(getModel().getPlayers()[identifier].getCenterX(),
+				getModel().getPlayers()[identifier].getCenterY());
 	}
-	
+
 	public MainModel getModel() {
 		return (MainModel) m_model;
 	}
-	
+
 	public MainView getView() {
 		return ((MainView) m_view);
 	}
-	
+
 	public void init() {
-		// TODO call this from main class
+		getView().initPlayers();
 	}
-	
-	
+
+
 }

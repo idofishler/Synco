@@ -15,7 +15,6 @@ public class PersonModel implements IModel {
 	private ArrayList<Double> timeBetweenBeats;
 	double lastBeat;
 
-	private ArrayList<CircleModel> circles;
 	private int centerX;
 	private int centerY;
 
@@ -29,30 +28,21 @@ public class PersonModel implements IModel {
 		gamePos = pos;
 		this.ready = false;
 
-		this.circles = new ArrayList<CircleModel>();
-
 		timeBetweenBeats = new ArrayList<Double>();
 		lastBeat = 0;
 	}
 
-
-
-
 	@Override
 	public void update() {
-		for (CircleModel circle : circles) {
-			circle.update();
-		}
+		// nothing to do
 	}
 
 
 
 
-	public CircleModel pulse() {
+	public void pulse() {
+		// beat is for calculating the heart rate
 		beat();
-		CircleModel circleModel = new CircleModel(centerX, centerY, 0);
-		circles.add(circleModel);
-		return circleModel;
 	}
 
 	public void beat() {
@@ -61,13 +51,6 @@ public class PersonModel implements IModel {
 	
 		if (timeBetweenBeats.size() > BEATS_TO_STORE) 
 			timeBetweenBeats.remove(0);
-	}
-
-	/**
-	 * @return the circles
-	 */
-	public ArrayList<CircleModel> getCircles() {
-		return circles;
 	}
 
 	/**
@@ -188,9 +171,6 @@ public class PersonModel implements IModel {
 	public void start() {
 		this.ready = true;
 	}
-
-
-
 
 	/**
 	 * @return the ready

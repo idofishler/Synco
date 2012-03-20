@@ -12,6 +12,7 @@ public class MainModel implements IModel {
 	private static final int RATE_THRESHOLD = 7;
 	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
 	private PersonModel[] players;
+	private WaterModel waterModel;
 
 	/**
 	 * @return the players
@@ -28,6 +29,7 @@ public class MainModel implements IModel {
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			players[i] = new PersonModel(i);
 		}
+		waterModel = new WaterModel();
 	}
 
 	@Override
@@ -45,6 +47,9 @@ public class MainModel implements IModel {
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			players[i].update();
 		}
+		
+		// keep the water moving...
+		waterModel.update();
 	}
 
 	private boolean allPlayersReady() {
@@ -101,5 +106,9 @@ public class MainModel implements IModel {
 
 	public void startPlayer(int identifier) {
 		players[identifier].start();
+	}
+
+	public WaterModel getWaterModel() {
+		return this.waterModel;
 	}
 }
