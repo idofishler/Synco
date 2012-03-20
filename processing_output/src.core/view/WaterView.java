@@ -10,7 +10,6 @@ public class WaterView extends AbstractView {
 
 	private static final int DEFAUT_GAIN = 5;
 	private PImage water;
-	PImage ov;
 
 	public WaterView(PApplet p, IModel model) {
 		super(p, model);
@@ -90,12 +89,5 @@ public class WaterView extends AbstractView {
 	@Override
 	public void display() {
 		updateWater();
-		//blendOv();
-	}
-
-	private void blendOv() {
-		ov.copy(p.g,0,0,p.width,p.height,0,0,10,10);
-		ov.mask(ov);
-		p.blend(ov,0,0,9,9,0,0,p.width,p.height,PConstants.OVERLAY);
 	}
 }
