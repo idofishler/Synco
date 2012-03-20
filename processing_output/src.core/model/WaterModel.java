@@ -2,13 +2,17 @@ package model;
 
 public class WaterModel implements IModel {
 
+	private static final int DEFAULT_DENSITY = 5;
+	private static final int DEFAULT_RADUIS = 20;
+	
 	public int heightMap[][][]; // water surface (2 pages).
-	int turbulenceMap[][]; // turbulence map
 	public int line[]; // line optimizer;
 	public int space;
-	int radius, heightMax, density;
 	public int page = 0;
-	int m_width, m_height;
+
+	private int turbulenceMap[][]; // turbulence map
+	private int radius, heightMax, density;
+	private int m_width, m_height;
 
 	public void initMap(int width, int height) {
 		this.m_width = width;
@@ -21,8 +25,8 @@ public class WaterModel implements IModel {
 		for (int l = 0; l < height; l++) {
 			line[l] = l * width;
 		}
-		density = 5;
-		radius = 20;
+		density = DEFAULT_DENSITY;
+		radius = DEFAULT_RADUIS;
 		space = width * height - 1;
 
 		// the turbulence map, is an array to make a smooth turbulence over the height map.
