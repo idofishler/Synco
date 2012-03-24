@@ -17,7 +17,10 @@ public class MainController extends AbstractController {
 	@Override
 	public void event(int identifier) {
 
+		// TODO fix here save a pointer...
 		getModel().getPlayers()[identifier].pulse();
+		// make the flower move
+		getModel().getFlowerModel().moveFlower(getModel().getPlayers()[identifier]);
 
 		// start the player with the first pulse
 		getModel().startPlayer(identifier);

@@ -13,8 +13,8 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int STAGE_WIDTH = 700;
-	private static final int STAGE_HEIGHT = 500;
+	public static final int STAGE_WIDTH = 700;
+	public static final int STAGE_HEIGHT = 500;
 	
 	private static final boolean ARDUINO_INPUT_ON = false;
 

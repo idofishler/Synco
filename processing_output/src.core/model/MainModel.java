@@ -13,6 +13,7 @@ public class MainModel implements IModel {
 	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
 	private PersonModel[] players;
 	private WaterModel waterModel;
+	private FlowerModel flowerModel;
 
 	/**
 	 * @return the players
@@ -30,6 +31,7 @@ public class MainModel implements IModel {
 			players[i] = new PersonModel(i);
 		}
 		waterModel = new WaterModel();
+		flowerModel = new FlowerModel();
 	}
 
 	@Override
@@ -120,5 +122,12 @@ public class MainModel implements IModel {
 
 	public WaterModel getWaterModel() {
 		return this.waterModel;
+	}
+
+	/**
+	 * @return the flowerModel
+	 */
+	public FlowerModel getFlowerModel() {
+		return flowerModel;
 	}
 }

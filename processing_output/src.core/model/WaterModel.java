@@ -3,7 +3,7 @@ package model;
 public class WaterModel implements IModel {
 
 	private static final int DEFAULT_DENSITY = 5;
-	private static final int DEFAULT_RADUIS = 20;
+	public static final int DEFAULT_RADUIS = 40;
 	
 	public int heightMap[][][]; // water surface (2 pages).
 	public int line[]; // line optimizer;
