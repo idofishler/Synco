@@ -9,8 +9,8 @@ package model;
 public class MainModel implements IModel {
 
 	public static final int NO_OF_PLAYERS = 2;
-	private static final int RATE_THRESHOLD = 7;
-	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
+	private static final int RATE_THRESHOLD = 20;
+	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
 	private PersonModel[] players;
 	private WaterModel waterModel;
 	private FlowerModel flowerModel;

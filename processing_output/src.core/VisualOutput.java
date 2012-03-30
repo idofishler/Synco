@@ -16,7 +16,7 @@ public class VisualOutput extends PApplet {
 	public static final int STAGE_WIDTH = 700;
 	public static final int STAGE_HEIGHT = 500;
 	
-	private static final boolean ARDUINO_INPUT_ON = false;
+	private static final boolean ARDUINO_INPUT_ON = true;
 
 	IController mainController;
 	Serial port;
@@ -43,8 +43,14 @@ public class VisualOutput extends PApplet {
 	}
 
 	private void initSirialPort() {
-
-		port = new Serial(this, Serial.list()[0], 9600);
+		try {
+			port = new Serial(this, Serial.list()[0], 115200);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
 
 	}
 

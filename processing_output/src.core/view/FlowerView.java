@@ -14,7 +14,7 @@ public class FlowerView extends AbstractView {
 
 	public FlowerView(PApplet p, IModel model) {
 		super(p, model);
-		flowerImg = p.loadImage("C:/Users/Ido/workspace/Milab/processing_output/resourse/flower.png");
+		//flowerImg = p.loadImage("resources/flower.png");
 		getModel().cX = p.width / 2;
 		getModel().cY = p.height / 2;
 		counter = 0;

@@ -8,7 +8,7 @@ public class MainView extends AbstractView {
 
 	PersonView[] players;
 	WaterView waterView;
-	FlowerView flowerView;
+	//FlowerView flowerView;
 
 	/**
 	 * @param p
@@ -19,7 +19,7 @@ public class MainView extends AbstractView {
 		// Start the water view
 		waterView = new WaterView(p, getModel().getWaterModel());
 		// start the flower view
-		flowerView = new FlowerView(p, getModel().getFlowerModel());
+		//flowerView = new FlowerView(p, getModel().getFlowerModel());
 	}
 
 	public void initPlayers() {
@@ -43,7 +43,7 @@ public class MainView extends AbstractView {
 			players[i].display();
 		}
 		waterView.display();
-		flowerView.display();
+		//flowerView.display();
 	}
 	
 	public void init() {
