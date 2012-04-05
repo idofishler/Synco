@@ -44,6 +44,7 @@ public class VisualOutput extends PApplet {
 
 	private void initSirialPort() {
 		try {
+			System.out.println("Sirial Port to use: " + Serial.list()[0]);
 			port = new Serial(this, Serial.list()[0], 115200);
 		}
 		catch (Exception e) {
