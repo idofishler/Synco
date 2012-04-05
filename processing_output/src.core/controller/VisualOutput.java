@@ -1,10 +1,11 @@
+package controller;
 
+
+import controller.IController;
 import model.MainModel;
 import processing.core.PApplet;
 import processing.serial.Serial;
 import view.MainView;
-import controller.IController;
-import controller.MainController;
 
 
 public class VisualOutput extends PApplet {
@@ -13,8 +14,7 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final int STAGE_WIDTH = 700;
-	public static final int STAGE_HEIGHT = 500;
+
 	
 	private static final boolean ARDUINO_INPUT_ON = true;
 
@@ -25,7 +25,7 @@ public class VisualOutput extends PApplet {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PApplet.main(new String[] {  "--present", "VisualOutput" });
+		PApplet.main(new String[] {"controller.VisualOutput"});
 	}
 
 	public void setup() {
@@ -34,9 +34,10 @@ public class VisualOutput extends PApplet {
 			initSirialPort();
 		}
 
-		size(STAGE_WIDTH, STAGE_HEIGHT);
-
 		MainModel mainModel = new MainModel();
+		
+		size(MainModel.STAGE_WIDTH, MainModel.STAGE_HEIGHT);
+
 		MainView mainView = new MainView(this, mainModel);
 
 		mainController = new MainController(mainModel, mainView);
@@ -66,6 +67,7 @@ public class VisualOutput extends PApplet {
 		if (port.available() > 0) {
 			byte inChar = (byte) port.read();
 			port.clear();
+
 			if (inChar == '0') {
 				mainController.event(0);
 			}

@@ -2,6 +2,7 @@ package model;
 
 
 
+
 /**
  * @author Ido
  *
@@ -10,6 +11,9 @@ public class MainModel implements IModel {
 
 	public static final int NO_OF_PLAYERS = 2;
 	private static final int RATE_THRESHOLD = 20;
+	public static final int STAGE_WIDTH = 1200;
+	public static final int STAGE_HEIGHT = 800;
+	
 	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
 	private PersonModel[] players;
 	private WaterModel waterModel;
@@ -95,7 +99,7 @@ public class MainModel implements IModel {
 		int leftPlayerXpos = players[1].getCenterX();
 		int distance = rightPlayerXpos - leftPlayerXpos;
 
-		if (distance < 700) { // TODO fix 700
+		if (distance < (int) (0.8 * STAGE_WIDTH)) {
 			players[0].setCenterX(++rightPlayerXpos);
 			players[1].setCenterX(--leftPlayerXpos);
 		}

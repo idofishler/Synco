@@ -13,7 +13,6 @@ public class WaterView extends AbstractView {
 
 	public WaterView(PApplet p, IModel model) {
 		super(p, model);
-		init();
 	}
 
 	public void init() {
