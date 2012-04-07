@@ -16,7 +16,7 @@ public class VisualOutput extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	
-	private static final boolean ARDUINO_INPUT_ON = true;
+	private static boolean ARDUINO_INPUT_ON = false;
 
 	IController mainController;
 	Serial port;
@@ -30,9 +30,7 @@ public class VisualOutput extends PApplet {
 
 	public void setup() {
 
-		if (ARDUINO_INPUT_ON) {
-			initSirialPort();
-		}
+		initSirialPort();
 
 		MainModel mainModel = new MainModel();
 		
@@ -43,15 +41,18 @@ public class VisualOutput extends PApplet {
 		mainController = new MainController(mainModel, mainView);
 	}
 
+	// TODO change this to use proper port handling. See SerialTest example.
 	private void initSirialPort() {
 		try {
 			System.out.println("Sirial Port to use: " + Serial.list()[0]);
 			port = new Serial(this, Serial.list()[0], 115200);
+			ARDUINO_INPUT_ON = true;
 		}
 		catch (Exception e) {
-			// TODO: handle exception
-			System.err.println(e.getMessage());
-			System.exit(1);
+			if (MainController.DEBUG) {
+				System.err.println(e.getMessage());
+			}
+			System.out.println("Arduino input will not work");
 		}
 
 	}
