@@ -10,5 +10,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/serial.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

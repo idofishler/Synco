@@ -58,7 +58,7 @@ public class MainModel implements IModel {
 		waterModel.update();
 	}
 
-	private boolean allPlayersReady() {
+	public boolean allPlayersReady() {
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			if (!players[i].isReady()) {
 				return false;
