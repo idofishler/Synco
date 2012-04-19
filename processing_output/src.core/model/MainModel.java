@@ -1,8 +1,5 @@
 package model;
 
-
-
-
 /**
  * @author Ido
  *
@@ -17,7 +14,7 @@ public class MainModel implements IModel {
 	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
 	private PersonModel[] players;
 	private WaterModel waterModel;
-	private FlowerModel flowerModel;
+	private SoundModel soundModel;
 
 	/**
 	 * @return the players
@@ -35,7 +32,7 @@ public class MainModel implements IModel {
 			players[i] = new PersonModel(i);
 		}
 		waterModel = new WaterModel();
-		flowerModel = new FlowerModel();
+		soundModel = new SoundModel();
 	}
 
 	@Override
@@ -56,6 +53,8 @@ public class MainModel implements IModel {
 		
 		// keep the water moving...
 		waterModel.update();
+		
+		soundModel.update();
 	}
 
 	public boolean allPlayersReady() {
@@ -91,6 +90,8 @@ public class MainModel implements IModel {
 			players[0].setCenterX(--rightPlayerXpos);
 			players[1].setCenterX(++leftPlayerXpos);
 		}
+		
+		soundModel.sync();
 	}
 
 	public void unsync() {
@@ -103,6 +104,8 @@ public class MainModel implements IModel {
 			players[0].setCenterX(++rightPlayerXpos);
 			players[1].setCenterX(--leftPlayerXpos);
 		}
+		
+		soundModel.unsync();
 	}
 
 	public boolean areSynced() {
@@ -128,10 +131,7 @@ public class MainModel implements IModel {
 		return this.waterModel;
 	}
 
-	/**
-	 * @return the flowerModel
-	 */
-	public FlowerModel getFlowerModel() {
-		return flowerModel;
+	public SoundModel getSoundModel() {
+		return this.soundModel;
 	}
 }

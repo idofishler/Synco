@@ -1,7 +1,7 @@
 /**
  * 
  */
-package model;
+package utils;
 
 /**
  * @author idofishler
@@ -65,4 +65,12 @@ public class MP3Player {
         }.start();
 
     }
+
+	public boolean isRunning() {
+		return !player.isComplete() || player.getPosition() == 0;
+	}
+	
+	public void stop() {
+		player.close();
+	}
 }
