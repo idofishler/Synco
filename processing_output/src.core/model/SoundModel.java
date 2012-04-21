@@ -7,18 +7,17 @@ import utils.MyAdvancePlayer;
 
 public class SoundModel implements IModel {
 
-	private static final String HEART_BIT_SOUND_PATH = "/Users/idofishler/workspace/Milab/processing_output/resource/HeartBit.mp3";
+	private static final String HEART_BIT_SOUND_PATH = "resource/HeartBit.mp3";
 
 	private static final int INIT_NUM_OF_CHANNELS = 0;
 	private static final String[] CHNNEL_PATHS = { 
-		"/Users/idofishler/workspace/Milab/processing_output/resource/channel0.mp3",
-		"/Users/idofishler/workspace/Milab/processing_output/resource/channel1.mp3",
-		"/Users/idofishler/workspace/Milab/processing_output/resource/channel2.mp3",
-		"/Users/idofishler/workspace/Milab/processing_output/resource/channel3.mp3",
-		"/Users/idofishler/workspace/Milab/processing_output/resource/channel4.mp3",	
+		"resource/channel0.mp3",
+		"resource/channel1.mp3",
+		"resource/channel2.mp3",
+		"resource/channel3.mp3",
+		"resource/channel4.mp3",	
 	};
-	private static final String GATE_KEEPER_SONG_PATH = "/Users/idofishler/workspace/Milab/processing_output/resource/01 Gatekeeper.mp3";
-	private static final float INCREMENT_FACTOR = 0.1f;
+	private static final String GATE_KEEPER_SONG_PATH = "resource/01 Gatekeeper.mp3";
 
 	private int numOfChannels;
 	private int prevNumOfChannels;
