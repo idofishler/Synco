@@ -10,6 +10,7 @@ public class MainModel implements IModel {
 	private static final int RATE_THRESHOLD = 20;
 	public static final int STAGE_WIDTH = 1200;
 	public static final int STAGE_HEIGHT = 800;
+	public static final float MAX_DISTANCE_FACTOR = 0.8f;
 	
 	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
 	private PersonModel[] players;
@@ -91,7 +92,7 @@ public class MainModel implements IModel {
 			players[1].setCenterX(++leftPlayerXpos);
 		}
 		
-		soundModel.sync();
+		soundModel.playSongChannels(distance);
 	}
 
 	public void unsync() {
@@ -100,12 +101,12 @@ public class MainModel implements IModel {
 		int leftPlayerXpos = players[1].getCenterX();
 		int distance = rightPlayerXpos - leftPlayerXpos;
 
-		if (distance < (int) (0.8 * STAGE_WIDTH)) {
+		if (distance < (int) (MAX_DISTANCE_FACTOR * STAGE_WIDTH)) {
 			players[0].setCenterX(++rightPlayerXpos);
 			players[1].setCenterX(--leftPlayerXpos);
 		}
 		
-		soundModel.unsync();
+		soundModel.playSongChannels(distance);
 	}
 
 	public boolean areSynced() {
