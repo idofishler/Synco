@@ -18,7 +18,7 @@ public class VisualOutput extends PApplet {
 
 	private static boolean ARDUINO_INPUT_ON = false;
 
-	IController mainController;
+	MainController mainController;
 	Serial port;
 	
 	Recorder recorder;
@@ -112,7 +112,8 @@ public class VisualOutput extends PApplet {
 			recorder.snap();
 		}
 		if (key == ESC) {  
-			recorder.stop(); 
+			recorder.stop();
+			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
 	}

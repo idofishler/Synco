@@ -1,8 +1,7 @@
 package utils;
 
-import controller.VisualOutput;
 import processing.core.PApplet;
-import processing.video.*;
+import processing.video.MovieMaker;
 
 public class Recorder {
 

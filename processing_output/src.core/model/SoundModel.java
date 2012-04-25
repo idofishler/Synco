@@ -74,4 +74,12 @@ public class SoundModel implements IModel {
 		float closeness =  (float) distance / (float) maxDistance;
 		numOfChannels = (int) ((1 - closeness) * CHNNEL_PATHS.length);
 	}
+	
+	public void stop() {
+		for (MP3Player channel : channelPlayers) {
+			if (channel.isRunning()) {
+				channel.stop();
+			}
+		}
+	}
 }
