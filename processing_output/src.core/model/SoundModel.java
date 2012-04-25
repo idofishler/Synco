@@ -73,6 +73,5 @@ public class SoundModel implements IModel {
 		int maxDistance = (int) (MainModel.STAGE_WIDTH * MainModel.MAX_DISTANCE_FACTOR);
 		float closeness =  (float) distance / (float) maxDistance;
 		numOfChannels = (int) ((1 - closeness) * CHNNEL_PATHS.length);
-		System.out.println(numOfChannels);
 	}
 }

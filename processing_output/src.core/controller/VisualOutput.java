@@ -5,6 +5,7 @@ import controller.IController;
 import model.MainModel;
 import processing.core.PApplet;
 import processing.serial.Serial;
+import utils.Recorder;
 import view.MainView;
 
 
@@ -15,11 +16,13 @@ public class VisualOutput extends PApplet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
 	private static boolean ARDUINO_INPUT_ON = false;
 
 	IController mainController;
 	Serial port;
+	
+	Recorder recorder;
+	private boolean record = false;
 
 	/**
 	 * @param args
@@ -33,12 +36,19 @@ public class VisualOutput extends PApplet {
 		initSirialPort();
 
 		MainModel mainModel = new MainModel();
-		
+
 		size(MainModel.STAGE_WIDTH, MainModel.STAGE_HEIGHT);
 
 		MainView mainView = new MainView(this, mainModel);
 
 		mainController = new MainController(mainModel, mainView);
+		
+		initRecording();
+	}
+
+	private void initRecording() {
+		recorder = new Recorder();
+		recorder.init(this);
 	}
 
 	// TODO change this to use proper port handling. See SerialTest example.
@@ -62,6 +72,10 @@ public class VisualOutput extends PApplet {
 			CheckSerialEvent();			
 		}
 		mainController.doUI();
+		
+		if (record) {
+			recorder.saveVideo();
+		}
 	}
 
 	private void CheckSerialEvent() { 
@@ -86,8 +100,23 @@ public class VisualOutput extends PApplet {
 		if (key == '1') {
 			mainController.event(1);
 		}
+		if (key == ' ') {
+			if (record) {
+				recorder.stop();
+				record = false;
+			} else {
+				record = true;
+			}
+		}
+		if (key == 'p') {
+			recorder.snap();
+		}
+		if (key == ESC) {  
+			recorder.stop(); 
+			exit();
+		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see processing.core.PApplet#mouseClicked()
 	 */
@@ -100,7 +129,7 @@ public class VisualOutput extends PApplet {
 			mainController.event(1);
 		}
 	}
-	
-	
+
+
 }
 
