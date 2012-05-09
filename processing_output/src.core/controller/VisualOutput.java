@@ -1,7 +1,6 @@
 package controller;
 
 
-import controller.IController;
 import model.MainModel;
 import processing.core.PApplet;
 import processing.serial.Serial;
@@ -17,10 +16,16 @@ public class VisualOutput extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	private static boolean ARDUINO_INPUT_ON = false;
+	private static final boolean RECORDING_ENABLE = false;
+
+	private static final String PORT_NAMES[] = { 
+		"/dev/tty.usbserial-A600AH19", // Mac OS X
+		"/dev/ttyUSB0", // Linux
+		"COM3", // Windows
+	};
 
 	MainController mainController;
 	Serial port;
-	
 	Recorder recorder;
 	private boolean record = false;
 
@@ -42,8 +47,10 @@ public class VisualOutput extends PApplet {
 		MainView mainView = new MainView(this, mainModel);
 
 		mainController = new MainController(mainModel, mainView);
-		
-		initRecording();
+
+		if (RECORDING_ENABLE) {
+			initRecording();
+		}
 	}
 
 	private void initRecording() {
@@ -54,9 +61,20 @@ public class VisualOutput extends PApplet {
 	// TODO change this to use proper port handling. See SerialTest example.
 	private void initSirialPort() {
 		try {
-			System.out.println("Sirial Port to use: " + Serial.list()[0]);
-			port = new Serial(this, Serial.list()[0], 115200);
-			ARDUINO_INPUT_ON = true;
+			String portName = null;
+			for (int i = 0; i < PORT_NAMES.length; i++) {
+				if (PORT_NAMES[i].equalsIgnoreCase(Serial.list()[0])) {
+					portName = Serial.list()[0];
+				}
+			}
+			if (portName != null) {
+				System.out.println("Sirial Port to use: " + portName);
+				port = new Serial(this, portName, 115200);
+				ARDUINO_INPUT_ON = true;
+			}
+			else {
+				System.out.println("Arduino input will not work");
+			}
 		}
 		catch (Exception e) {
 			if (MainController.DEBUG) {
@@ -72,8 +90,8 @@ public class VisualOutput extends PApplet {
 			CheckSerialEvent();			
 		}
 		mainController.doUI();
-		
-		if (record) {
+
+		if (RECORDING_ENABLE && record) {
 			recorder.saveVideo();
 		}
 	}
@@ -100,19 +118,23 @@ public class VisualOutput extends PApplet {
 		if (key == '1') {
 			mainController.event(1);
 		}
-		if (key == ' ') {
-			if (record) {
-				recorder.stop();
-				record = false;
-			} else {
-				record = true;
+		if (RECORDING_ENABLE) {
+			if (key == ' ') {
+				if (record) {
+					recorder.stop();
+					record = false;
+				} else {
+					record = true;
+				}
+			}
+			if (key == 'p') {
+				recorder.snap();
 			}
 		}
-		if (key == 'p') {
-			recorder.snap();
-		}
-		if (key == ESC) {  
-			recorder.stop();
+		if (key == ESC) {
+			if (RECORDING_ENABLE && record) {
+				recorder.stop();
+			}
 			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
