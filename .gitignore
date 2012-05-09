@@ -6,3 +6,5 @@ processing_output/bin/controller/VisualOutput.class
 processing_output/bin/model/SoundModel.class
 
 processing_output/bin/utils/Recorder.class
+
+StepperMotor/.DS_Store
