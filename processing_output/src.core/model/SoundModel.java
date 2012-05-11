@@ -7,7 +7,7 @@ import utils.MyAdvancePlayer;
 
 public class SoundModel implements IModel {
 
-	private static final String HEART_BIT_SOUND_PATH = "resource/HeartBit.mp3";
+	private static final String HEART_BIT_SOUND_PATH = "resource/HeartBit_strong.mp3";
 
 	private static final int INIT_NUM_OF_CHANNELS = 0;
 	private static final String[] CHNNEL_PATHS = { 
