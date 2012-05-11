@@ -13,6 +13,8 @@ public class MainModel implements IModel {
 	public static final float MAX_DISTANCE_FACTOR = 0.8f;
 	
 	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
+	private static final int MIN_HEART_RATE = 30;
+	private static final int MAX_HEART_RATE = 150;
 	private PersonModel[] players;
 	private WaterModel waterModel;
 	private SoundModel soundModel;
@@ -123,8 +125,12 @@ public class MainModel implements IModel {
 		double rightPlayerLastBit = players[0].getLastBeat();
 		double leftPlayerLastBit = players[1].getLastBeat();
 		double pulseGap = Math.abs(rightPlayerLastBit - leftPlayerLastBit);
+		
+		boolean areAlive = 
+				rightPlayerRate > MIN_HEART_RATE && rightPlayerRate < MAX_HEART_RATE &&
+				leftPlayerRate > MIN_HEART_RATE && leftPlayerRate < MAX_HEART_RATE;
 
-		if (pulseGap < PULSE_THRESHOLD && rateGap < RATE_THRESHOLD) {
+		if (areAlive && pulseGap < PULSE_THRESHOLD && rateGap < RATE_THRESHOLD) {
 			return true;
 		}
 		return false;

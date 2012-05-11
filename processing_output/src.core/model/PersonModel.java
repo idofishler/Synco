@@ -13,8 +13,8 @@ public class PersonModel implements IModel {
 	private float pulseStrangth;
 	private int gamePos;
 
-	private ArrayList<Double> timeBetweenBeats;
-	double lastBeat;
+	private ArrayList<Long> timeBetweenBeats;
+	long lastBeat;
 
 	private int centerX;
 	private int centerY;
@@ -29,7 +29,7 @@ public class PersonModel implements IModel {
 		gamePos = pos;
 		this.ready = false;
 
-		timeBetweenBeats = new ArrayList<Double>();
+		timeBetweenBeats = new ArrayList<Long>();
 		lastBeat = 0;
 	}
 
