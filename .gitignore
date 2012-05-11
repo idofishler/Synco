@@ -1,10 +1,14 @@
 
 processing_output/output/synco_vdo_.mov
 
-processing_output/bin/controller/VisualOutput.class
-
-processing_output/bin/model/SoundModel.class
-
-processing_output/bin/utils/Recorder.class
+processing_output/bin/*
 
 StepperMotor/.DS_Store
+
+processing_output/bin/controller/MainController.class
+
+processing_output/bin/model/MainModel.class
+
+processing_output/bin/model/PersonModel.class
+
+Adafruit-Motor-Shield-library

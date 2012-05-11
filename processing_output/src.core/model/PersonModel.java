@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class PersonModel implements IModel {
 
 	private static final int BEATS_TO_STORE = 5;
+	private static final long START_DELAY = 12 * 1000;
 
 	private String name;
 	private int heartRate;
@@ -168,8 +169,10 @@ public class PersonModel implements IModel {
 		return lastBeat;
 	}
 
-	public void start() {
-		this.ready = true;
+	public void start(long startTime) {
+		if (!ready && System.currentTimeMillis() - startTime > START_DELAY) {
+			this.ready = true;			
+		}
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package controller;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import model.IModel;
 import model.MainModel;
@@ -57,6 +59,7 @@ public class MainController extends AbstractController {
 
 	public void init() {
 		startTime = System.currentTimeMillis();
+		getModel().init(startTime);
 		if (DEBUG) {
 			System.out.println("Iteraction started on: " + new Date(startTime));
 		}

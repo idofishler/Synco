@@ -16,13 +16,8 @@ public class MainModel implements IModel {
 	private PersonModel[] players;
 	private WaterModel waterModel;
 	private SoundModel soundModel;
+	private long startTime;
 
-	/**
-	 * @return the players
-	 */
-	public PersonModel[] getPlayers() {
-		return players;
-	}
 
 	/**
 	 * 
@@ -35,7 +30,18 @@ public class MainModel implements IModel {
 		waterModel = new WaterModel();
 		soundModel = new SoundModel();
 	}
+	
+	public void init(long startTime) {
+		this.startTime = startTime;
+	}
 
+	/**
+	 * @return the players
+	 */
+	public PersonModel[] getPlayers() {
+		return players;
+	}
+	
 	@Override
 	public void update() {
 
@@ -125,7 +131,7 @@ public class MainModel implements IModel {
 	}
 
 	public void startPlayer(int identifier) {
-		players[identifier].start();
+		players[identifier].start(startTime);
 	}
 
 	public WaterModel getWaterModel() {
