@@ -31,12 +31,16 @@ public class MainController extends AbstractController {
 		// start the player with the first pulse
 		getModel().startPlayer(identifier);
 
-		handleSound();
+		// only make wave if "player is alive" pulse in the range
+		if (getModel().getPlayers()[identifier].isAlive()) {
+			
+			handleSound();
 		
-		// this long line is making the water move where the player center is at
-		getModel().getWaterModel().
-		makeTurbulence(getModel().getPlayers()[identifier].getCenterX(),
-				getModel().getPlayers()[identifier].getCenterY());
+			// this long line is making the water move where the player center is at
+			getModel().getWaterModel().
+			makeTurbulence(getModel().getPlayers()[identifier].getCenterX(),
+					getModel().getPlayers()[identifier].getCenterY());
+		}
 
 
 	}

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 public class PersonModel implements IModel {
 
-	private static final int BEATS_TO_STORE = 5;
+	private static final int MIN_HEART_RATE = 30;
+	private static final int MAX_HEART_RATE = 150;
+	
+	private static final int BEATS_TO_STORE = 10;
 	private static final long START_DELAY = 12 * 1000;
 
 	private String name;
@@ -180,5 +183,9 @@ public class PersonModel implements IModel {
 	 */
 	public boolean isReady() {
 		return ready;
+	}
+	
+	public boolean isAlive() {
+		return getHeartRate() > MIN_HEART_RATE && getHeartRate() < MAX_HEART_RATE;
 	}
 }

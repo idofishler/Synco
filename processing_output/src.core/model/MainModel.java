@@ -1,5 +1,7 @@
 package model;
 
+import controller.MainController;
+
 /**
  * @author Ido
  *
@@ -7,14 +9,13 @@ package model;
 public class MainModel implements IModel {
 
 	public static final int NO_OF_PLAYERS = 2;
-	private static final int RATE_THRESHOLD = 20;
 	public static final int STAGE_WIDTH = 1200;
 	public static final int STAGE_HEIGHT = 800;
 	public static final float MAX_DISTANCE_FACTOR = 0.8f;
+
+	private static final int RATE_THRESHOLD = 20;
+	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
 	
-	private static final double PULSE_THRESHOLD = 10 * 1000; // seconds
-	private static final int MIN_HEART_RATE = 30;
-	private static final int MAX_HEART_RATE = 150;
 	private PersonModel[] players;
 	private WaterModel waterModel;
 	private SoundModel soundModel;
@@ -32,7 +33,7 @@ public class MainModel implements IModel {
 		waterModel = new WaterModel();
 		soundModel = new SoundModel();
 	}
-	
+
 	public void init(long startTime) {
 		this.startTime = startTime;
 	}
@@ -43,7 +44,7 @@ public class MainModel implements IModel {
 	public PersonModel[] getPlayers() {
 		return players;
 	}
-	
+
 	@Override
 	public void update() {
 
@@ -59,10 +60,10 @@ public class MainModel implements IModel {
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			players[i].update();
 		}
-		
+
 		// keep the water moving...
 		waterModel.update();
-		
+
 		soundModel.update();
 	}
 
@@ -99,7 +100,7 @@ public class MainModel implements IModel {
 			players[0].setCenterX(--rightPlayerXpos);
 			players[1].setCenterX(++leftPlayerXpos);
 		}
-		
+
 		soundModel.playSongChannels(distance);
 	}
 
@@ -113,7 +114,7 @@ public class MainModel implements IModel {
 			players[0].setCenterX(++rightPlayerXpos);
 			players[1].setCenterX(--leftPlayerXpos);
 		}
-		
+
 		soundModel.playSongChannels(distance);
 	}
 
@@ -126,9 +127,13 @@ public class MainModel implements IModel {
 		double leftPlayerLastBit = players[1].getLastBeat();
 		double pulseGap = Math.abs(rightPlayerLastBit - leftPlayerLastBit);
 		
-		boolean areAlive = 
-				rightPlayerRate > MIN_HEART_RATE && rightPlayerRate < MAX_HEART_RATE &&
-				leftPlayerRate > MIN_HEART_RATE && leftPlayerRate < MAX_HEART_RATE;
+		if (MainController.DEBUG) {
+			System.out.println("RIGHT BPM=" + rightPlayerRate);
+			System.out.println("LEFT BPM=" + leftPlayerRate);
+			System.out.println("GAP=" + pulseGap);
+		}
+
+		boolean areAlive = players[0].isAlive() && players[1].isAlive();
 
 		if (areAlive && pulseGap < PULSE_THRESHOLD && rateGap < RATE_THRESHOLD) {
 			return true;
