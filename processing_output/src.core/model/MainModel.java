@@ -100,7 +100,6 @@ public class MainModel implements IModel {
 			players[0].setCenterX(--rightPlayerXpos);
 			players[1].setCenterX(++leftPlayerXpos);
 		}
-
 		soundModel.playSongChannels(distance);
 	}
 
@@ -116,6 +115,13 @@ public class MainModel implements IModel {
 		}
 
 		soundModel.playSongChannels(distance);
+	}
+	
+	public int getDistance() {
+		int rightPlayerXpos = players[0].getCenterX();
+		int leftPlayerXpos = players[1].getCenterX();
+		int distance = rightPlayerXpos - leftPlayerXpos;
+		return distance;
 	}
 
 	public boolean areSynced() {

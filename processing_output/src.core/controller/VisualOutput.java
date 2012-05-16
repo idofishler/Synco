@@ -16,18 +16,27 @@ public class VisualOutput extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	private static boolean ARDUINO_INPUT_ON = false;
+	private static boolean ARDUINO_OUTPUT_ON = false;
 	private static final boolean RECORDING_ENABLE = false;
 
-	private static final String PORT_NAMES[] = { 
-		"/dev/tty.usbserial-A600AH19", // Mac OS X
+	private static final String IN_PORT_NAMES[] = { 
+		"/dev/tty.usbserial-A700ekac", // Mac OS X
 		"/dev/ttyUSB0", // Linux
-		"COM3", // Windows
+		"COM7", // Windows
+	};
+	
+	private static final String OUT_PORT_NAMES[] = { 
+		"/dev/tty.usbserial-A600AH19", // Mac OS X
+		"/dev/ttyUSB1", // Linux
+		"COM5", // Windows
 	};
 
 	MainController mainController;
-	Serial port;
+	Serial inPort;
+	Serial outPort;
 	Recorder recorder;
 	private boolean record = false;
+
 
 	/**
 	 * @param args
@@ -38,7 +47,7 @@ public class VisualOutput extends PApplet {
 
 	public void setup() {
 
-		initSirialPort();
+		initSirialPorts();
 
 		MainModel mainModel = new MainModel();
 
@@ -58,18 +67,18 @@ public class VisualOutput extends PApplet {
 		recorder.init(this);
 	}
 
-	// TODO change this to use proper port handling. See SerialTest example.
+	@Deprecated
 	private void initSirialPort() {
 		try {
 			String portName = null;
-			for (int i = 0; i < PORT_NAMES.length; i++) {
-				if (PORT_NAMES[i].equalsIgnoreCase(Serial.list()[0])) {
+			for (int i = 0; i < IN_PORT_NAMES.length; i++) {
+				if (IN_PORT_NAMES[i].equalsIgnoreCase(Serial.list()[0])) {
 					portName = Serial.list()[0];
 				}
 			}
 			if (portName != null) {
 				System.out.println("Sirial Port to use: " + portName);
-				port = new Serial(this, portName, 115200);
+				inPort = new Serial(this, portName, 115200);
 				ARDUINO_INPUT_ON = true;
 			}
 			else {
@@ -82,7 +91,46 @@ public class VisualOutput extends PApplet {
 			}
 			System.out.println("Arduino input will not work");
 		}
-
+	}
+	
+	private void initSirialPorts() {
+		try {
+			String inPortName = null;
+			String outPortName = null;
+			int serialsNo = Serial.list().length;
+			for (int n = 0; n < serialsNo; n++) {
+				for (int i = 0; i < IN_PORT_NAMES.length; i++) {
+					if (IN_PORT_NAMES[i].equalsIgnoreCase(Serial.list()[n])) {
+						inPortName = Serial.list()[n];
+					}
+					if (OUT_PORT_NAMES[i].equalsIgnoreCase(Serial.list()[n])) {
+						outPortName = Serial.list()[n];
+					}
+				}				
+			}
+			if (inPortName != null) {
+				System.out.println("IN Sirial port to use: " + inPortName);
+				inPort = new Serial(this, inPortName, 115200);
+				ARDUINO_INPUT_ON = true;
+			}
+			else {
+				System.out.println("Arduino input will not work");
+			}
+			if (outPortName != null) {
+				System.out.println("OUT Serial port to use: " + outPortName);
+				outPort = new Serial(this, outPortName, 9600);
+				ARDUINO_OUTPUT_ON = true;
+			}
+			else {
+				System.out.println("Arduino output will not work");
+			}
+		}
+		catch (Exception e) {
+			if (MainController.DEBUG) {
+				System.err.println(e.getMessage());
+			}
+			System.out.println("Arduino input will not work");
+		}
 	}
 
 	public void draw() {
@@ -97,15 +145,19 @@ public class VisualOutput extends PApplet {
 	}
 
 	private void CheckSerialEvent() { 
-		if (port.available() > 0) {
-			byte inChar = (byte) port.read();
-			port.clear();
+		if (inPort.available() > 0) {
+			byte inChar = (byte) inPort.read();
+			inPort.clear();
 
 			if (inChar == '0') {
 				mainController.event(0);
 			}
 			if (inChar == '1') {
 				mainController.event(1);
+			}
+			int distance = mainController.getModel().getDistance();
+			if (ARDUINO_OUTPUT_ON) {
+				outPort.write(distance);
 			}
 		}
 	}
