@@ -133,7 +133,7 @@ public class MainModel implements IModel {
 		double leftPlayerLastBit = players[1].getLastBeat();
 		double pulseGap = Math.abs(rightPlayerLastBit - leftPlayerLastBit);
 		
-		if (MainController.DEBUG) {
+		if (false && MainController.DEBUG) {
 			System.out.println("RIGHT BPM=" + rightPlayerRate);
 			System.out.println("LEFT BPM=" + leftPlayerRate);
 			System.out.println("GAP=" + pulseGap);

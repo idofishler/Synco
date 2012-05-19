@@ -14,6 +14,7 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final float DEFAULT_FRAME_RATE = 30;
 
 	private static boolean ARDUINO_INPUT_ON = false;
 	private static boolean ARDUINO_OUTPUT_ON = false;
@@ -24,12 +25,13 @@ public class VisualOutput extends PApplet {
 		"/dev/ttyUSB0", // Linux
 		"COM7", // Windows
 	};
-	
+
 	private static final String OUT_PORT_NAMES[] = { 
 		"/dev/tty.usbserial-A600AH19", // Mac OS X
 		"/dev/ttyUSB1", // Linux
 		"COM5", // Windows
 	};
+
 
 	MainController mainController;
 	Serial inPort;
@@ -47,6 +49,8 @@ public class VisualOutput extends PApplet {
 
 	public void setup() {
 
+		frameRate(DEFAULT_FRAME_RATE);
+		
 		initSirialPorts();
 
 		MainModel mainModel = new MainModel();
@@ -92,7 +96,7 @@ public class VisualOutput extends PApplet {
 			System.out.println("Arduino input will not work");
 		}
 	}
-	
+
 	private void initSirialPorts() {
 		try {
 			String inPortName = null;
@@ -134,7 +138,7 @@ public class VisualOutput extends PApplet {
 	}
 
 	public void draw() {
-		if (ARDUINO_INPUT_ON) {
+		if (ARDUINO_INPUT_ON || ARDUINO_OUTPUT_ON) {
 			CheckSerialEvent();			
 		}
 		mainController.doUI();
@@ -145,19 +149,27 @@ public class VisualOutput extends PApplet {
 	}
 
 	private void CheckSerialEvent() { 
-		if (inPort.available() > 0) {
-			byte inChar = (byte) inPort.read();
-			inPort.clear();
+		if (ARDUINO_INPUT_ON) {
+			if (inPort.available() > 0) {
+				byte inChar = (byte) inPort.read();
+				inPort.clear();
 
-			if (inChar == '0') {
-				mainController.event(0);
+				if (inChar == '0') {
+					mainController.event(0);
+				}
+				if (inChar == '1') {
+					mainController.event(1);
+				}
 			}
-			if (inChar == '1') {
-				mainController.event(1);
+		}
+		if (ARDUINO_OUTPUT_ON) {
+			if (mainController.getModel().areSynced()) {
+				//System.out.println("SYNCED");
+				outPort.write('1');				
 			}
-			int distance = mainController.getModel().getDistance();
-			if (ARDUINO_OUTPUT_ON) {
-				outPort.write(distance);
+			else {
+				//System.out.println("NOT_SYNCED");
+				outPort.write('0');	
 			}
 		}
 	}
@@ -204,7 +216,5 @@ public class VisualOutput extends PApplet {
 			mainController.event(1);
 		}
 	}
-
-
 }
 
