@@ -1,45 +1,81 @@
 #include <AFMotor.h>
+#include <EEPROM.h>
 
-AF_Stepper motor(48, 2);
+#define INIT_STEPS 30
+#define MAX_STEPS 370
+#define P1 7
+#define P2 8
 
-int initDistance = 0;   // for incoming serial data
-int newDistance = 0;
-boolean first = true;
+AF_Stepper motor(200, 2);
+
+int steps = INIT_STEPS;
+
 
 void setup() {
         Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
         motor.setSpeed(10);  // 10 rpm
-        motor.step(100, FORWARD, DOUBLE); 
-        motor.release();
+        //EEPROM.write(P,INIT_STEPS);
+        resetPos();
+        //motor.step(100, FORWARD, SINGLE); 
+        //motor.release();
         delay(1000);
 }
 
-void loop() {
+void resetPos() {
+  int lastPos = readFromEEPROM();
+  int gap = lastPos - INIT_STEPS;
+  move(-gap);
+  writeToEEPROM(INIT_STEPS);
+  motor.release();
+}
 
-        // send data only when you receive data:
-        if (Serial.available() > 0) {
-          // only do first time
-          if (first == true) {
-            initDistance = Serial.read();
-            first = false;
+void loop() {
+    // send data only when you receive data:
+    if (Serial.available() > 0) {
+        int val = Serial.read();
+        if (val == '0') {
+          //Serial.println("NOT_SYNCED");
+          if (steps > 0) {
+            motor.step(1, BACKWARD, SINGLE);
+            //motor.release();
+            steps--;
           }
-          // every other time
-          else {
-            newDistance =  Serial.read();     // read the incoming byte:
-            // say what you got:
-            Serial.print("I received: ");
-            Serial.println(newDistance, DEC);
-            int gap = newDistance - initDistance;
-            Serial.print("Gap is: ");
-            Serial.println(gap, DEC);
-            
-            if (newDistance > initDistance) {
-              motor.step(gap, FORWARD, DOUBLE);
-            }
-            else if (newDistance < initDistance) {
-            motor.step(-gap, BACKWARD, DOUBLE);
-            }
-            initDistance = newDistance; 
         }
-      }
+        else if (val == '1') {
+          //Serial.println("SYNCED");
+          if (steps < MAX_STEPS) {
+            motor.step(1, FORWARD, SINGLE);
+            //motor.release();
+            steps++;
+          }
+        }
+        writeToEEPROM(steps);
+    }
+}
+
+void move(int steps) {
+  if (steps > 0) {
+    motor.step(steps, FORWARD, SINGLE);
+  }
+  else if (steps < 0) {
+    motor.step(-steps, BACKWARD, SINGLE);
+  }
+  motor.release();
+}
+
+void writeToEEPROM(int in) {
+  if (in <= 255) {
+    EEPROM.write(P1,in);
+    EEPROM.write(P2, 0);
+  }
+  else if (in > 255 && in <= 512) {
+    EEPROM.write(P1,255);
+    EEPROM.write(P2,in-255);
+  }
+}
+
+int readFromEEPROM() {
+  int p1 = EEPROM.read(P1);
+  int p2 = EEPROM.read(P2);
+  return p1+p2;
 }
