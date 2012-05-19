@@ -61,12 +61,12 @@ public class PersonView extends AbstractView {
 		// Display the rate as text
 		int rate = getModel().getHeartRate();
 		
-		p.fill(0, 0, 0);
+		p.fill(255);
 		
 		if (getCenterX() > p.width / 2) {
-			p.text(rate, p.width - 35, 10);
+			p.text(String.valueOf(rate), p.width - 35, 10, 20, 20);
 		} else {
-			p.text(rate, 25, 10);			
+			p.text(String.valueOf(rate), 25, 10, 20, 20);			
 		}
 		p.noFill();
 	}

@@ -13,7 +13,7 @@ public class MainModel implements IModel {
 	public static final int STAGE_HEIGHT = 800;
 	public static final float MAX_DISTANCE_FACTOR = 0.8f;
 
-	private static final int RATE_THRESHOLD = 20;
+	private static final int RATE_THRESHOLD = 25;
 	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
 	
 	private PersonModel[] players;

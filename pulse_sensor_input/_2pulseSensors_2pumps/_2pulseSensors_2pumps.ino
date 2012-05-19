@@ -282,4 +282,3 @@ if ((sampleCounter %25) == 0 && (sampleCounter %20) != 0){
 }
 
 }// end isr
-

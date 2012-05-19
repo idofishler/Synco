@@ -39,11 +39,10 @@ public class MainView extends AbstractView {
 	}
 
 	public void display() {
+		waterView.display();
 		for (int i = 0; i < MainModel.NO_OF_PLAYERS; i++) {
 			players[i].display();
 		}
-		waterView.display();
-		//flowerView.display();
 	}
 	
 	public void init() {
