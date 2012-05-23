@@ -3,6 +3,7 @@ package controller;
 
 import model.MainModel;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.serial.Serial;
 import utils.Recorder;
 import view.MainView;
@@ -18,7 +19,7 @@ public class VisualOutput extends PApplet {
 
 	private static boolean ARDUINO_INPUT_ON = false;
 	private static boolean ARDUINO_OUTPUT_ON = false;
-	private static final boolean RECORDING_ENABLE = false;
+	private static final boolean RECORDING_ENABLE = true;
 
 	private static final String IN_PORT_NAMES[] = { 
 		"/dev/tty.usbserial-A700ekac", // Mac OS X
@@ -192,16 +193,24 @@ public class VisualOutput extends PApplet {
 				}
 			}
 			if (key == 'p') {
-				recorder.snap();
+				recorder.showQR("");//doSnap();  // TODO show QR on exit
 			}
 		}
 		if (key == ESC) {
-			if (RECORDING_ENABLE && record) {
+			if (RECORDING_ENABLE /*&& record*/) {
+				recorder.showQR("gameIdHere");
 				recorder.stop();
 			}
 			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
+	}
+
+	private void doSnap() {
+		String snapName = recorder.snap();
+		if (MainController.DEBUG) {
+			System.out.println("snapshot saved to: " + snapName);
+		}	
 	}
 
 	/* (non-Javadoc)

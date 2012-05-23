@@ -1,11 +1,16 @@
 package utils;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.video.MovieMaker;
 
 public class Recorder {
 
-	private String SAVE_NAME ="output/synco_"; // << here is the name of the file
+	private static final String PUBLIC_URL = "http://dl.dropbox.com/u/2805933/";
+	private static final int QR_SIZE = 200;
+
+
+	private String SAVE_NAME ="/Users/idofishler/Dropbox/public/"; // << here is the name of the file
 
 	private PApplet p;
 	private int pn = 0;
@@ -33,10 +38,38 @@ public class Recorder {
 		}
 	} 
 	
-	public void snap() {
-		p.save(SAVE_NAME + "_snap_" + pn++ + ".png");
+	public String snap() {
+		String snapName = "Synco_snap_" + pn++ + ".png";
+		p.save(SAVE_NAME + snapName);
+		return snapName;
 	}
 	
+	private String getQRURL(String name) {
+		String dropBoxUrl = PUBLIC_URL + name;
+		int size = QR_SIZE; //The size of the QR (in pixels)
+		String correctionLevel = "M"; //Error Correction level
+		int margin = 0;
+		String background = "FFFFFF"; //Background color
+		String codeText = "UTF-8"; //Text Encoding
+		String transparency ="a,s,000000";
+		String basicURL = 
+				"http://chart.apis.google.com/chart?chf=" + transparency +
+				"|bg,s," + background + "&chs=" + size + "x" + size + "&chld=" +
+						correctionLevel + "|" + margin + "&cht=qr&chl=";
+		String fullURL = basicURL + dropBoxUrl + "&choe=" + codeText; //FullURLof the QR
+		return fullURL;
+	}
+	
+	public void showQR(String gameId) {
+		// TODO add gameId folder
+		String QR_URL = getQRURL("html/sliedshow.html");
+		PImage onLine = p.loadImage(QR_URL, "png");
+		p.image(onLine, p.width/2 - QR_SIZE/2, p.height/2 - QR_SIZE/2);
+		p.noLoop();
+		//PApplet.open(QR_URL);
+	}
+
+
 	public void stop() {
 		if (videoOn) {
 			mm.finish();
