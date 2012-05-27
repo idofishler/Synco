@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.Date;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.video.MovieMaker;
@@ -21,7 +19,7 @@ public class Recorder {
 	private boolean initiated = false; 
 	private int frate = 15; // <<-- here is the frameRate 
 	private boolean videoOn = false; // this is used to indicate whether the video is capturing
-	
+
 	public void saveVideo() {   
 		if (!videoOn) {
 			videoOn = true;
@@ -33,22 +31,23 @@ public class Recorder {
 	public void init(PApplet p) {
 		if (!initiated) {
 			this.p = p;
-			
-			mm = new MovieMaker(p, p.width, p.height, SAVE_NAME + "vdo_" + ".mov", frate,       
-							MovieMaker.ANIMATION, MovieMaker.MEDIUM);
-			
-			gameId = String.valueOf(System.currentTimeMillis());
-			
-			initiated = true;
 		}
+
+		mm = new MovieMaker(p, p.width, p.height, SAVE_NAME + "vdo_" + ".mov", frate,       
+				MovieMaker.ANIMATION, MovieMaker.MEDIUM);
+
+		gameId = String.valueOf(System.currentTimeMillis());
+
+		initiated = true;
+
 	} 
-	
+
 	public String snap() {
 		String snapName = "Synco_snap_" + pn++ + ".png";
 		p.save(SAVE_NAME + gameId + '/' + snapName);
 		return gameId + '/' + snapName;
 	}
-	
+
 	private String getQRURL(String name) {
 		String dropBoxUrl = PUBLIC_URL + name;
 		int size = QR_SIZE; //The size of the QR (in pixels)
@@ -60,18 +59,18 @@ public class Recorder {
 		String basicURL = 
 				"http://chart.apis.google.com/chart?chf=" + transparency +
 				"|bg,s," + background + "&chs=" + size + "x" + size + "&chld=" +
-						correctionLevel + "|" + margin + "&cht=qr&chl=";
+				correctionLevel + "|" + margin + "&cht=qr&chl=";
 		String fullURL = basicURL + dropBoxUrl + "&choe=" + codeText; //FullURLof the QR
 		return fullURL;
 	}
-	
+
 	public void showQR() {
 		String slidShowURL = "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn;
 		String QR_URL = getQRURL(slidShowURL);
 		PImage onLine = p.loadImage(QR_URL, "png");
 		p.image(onLine, p.width/2 - QR_SIZE/2, p.height/2 - QR_SIZE/2);
 		p.noLoop();
-		
+
 		// DEBUG only!!!
 //		PApplet.open(PUBLIC_URL + "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn);
 //		PApplet.open(QR_URL);

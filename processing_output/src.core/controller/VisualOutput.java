@@ -62,14 +62,15 @@ public class VisualOutput extends PApplet {
 
 		mainController = new MainController(mainModel, mainView);
 
-		if (RECORDING_ENABLE) {
-			initRecording();
-		}
+		recorder = new Recorder();
+		
+		reset();
 	}
 
 	private void initRecording() {
-		recorder = new Recorder();
-		recorder.init(this);
+		if (RECORDING_ENABLE) {			
+			recorder.init(this);
+		}
 	}
 
 	@Deprecated
@@ -139,8 +140,15 @@ public class VisualOutput extends PApplet {
 	}
 
 	public void draw() {
-		if (ARDUINO_INPUT_ON || ARDUINO_OUTPUT_ON) {
-			CheckSerialEvent();			
+		if (ARDUINO_OUTPUT_ON) {
+			if (mainController.getModel().areSynced()) {
+				//System.out.println("SYNCED");
+				outPort.write('1');				
+			}
+			else {
+				//System.out.println("NOT_SYNCED");
+				outPort.write('0');	
+			}
 		}
 		mainController.doUI();
 
@@ -148,8 +156,12 @@ public class VisualOutput extends PApplet {
 			recorder.saveVideo();
 		}
 	}
-
-	private void CheckSerialEvent() { 
+	
+	public void serialEvent(Serial p) {
+		readSerialInput();
+	}
+	
+	private void readSerialInput() {
 		if (ARDUINO_INPUT_ON) {
 			if (inPort.available() > 0) {
 				byte inChar = (byte) inPort.read();
@@ -161,16 +173,6 @@ public class VisualOutput extends PApplet {
 				if (inChar == '1') {
 					mainController.event(1);
 				}
-			}
-		}
-		if (ARDUINO_OUTPUT_ON) {
-			if (mainController.getModel().areSynced()) {
-				//System.out.println("SYNCED");
-				outPort.write('1');				
-			}
-			else {
-				//System.out.println("NOT_SYNCED");
-				outPort.write('0');	
 			}
 		}
 	}
@@ -195,6 +197,13 @@ public class VisualOutput extends PApplet {
 			if (key == 'p') {
 				doSnap();
 			}
+			if (key == 's') {
+				recorder.showQR();
+				noLoop();
+			}
+		}
+		if (key == 'r') {
+			reset();
 		}
 		if (key == ESC) {
 			if (RECORDING_ENABLE /*&& record*/) {
@@ -203,10 +212,25 @@ public class VisualOutput extends PApplet {
 			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
-		if (key == 's') {
-			recorder.showQR();
-			noLoop();
+	}
+
+	private void reset() {
+		if (ARDUINO_INPUT_ON) {
+			inPort.write('R');
 		}
+		if (ARDUINO_OUTPUT_ON) {
+			outPort.write('R');
+		}
+		initRecording();
+		
+		// this ugly hack triggers another event that will cause the un-sync
+		try {
+			Thread.sleep(500); 
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		mainController.event(0);
+		// end of ugly hack
 	}
 
 	private void doSnap() {
