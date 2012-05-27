@@ -8,7 +8,3 @@ StepperMotor/.DS_Store
 Adafruit-Motor-Shield-library
 
 *.DS_Store
-
-processing_output/bin/view/MainView.class
-
-processing_output/bin/view/PersonView.class
