@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Date;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.video.MovieMaker;
@@ -11,6 +13,7 @@ public class Recorder {
 
 
 	private String SAVE_NAME ="/Users/idofishler/Dropbox/public/"; // << here is the name of the file
+	private String gameId;
 
 	private PApplet p;
 	private int pn = 0;
@@ -33,15 +36,17 @@ public class Recorder {
 			
 			mm = new MovieMaker(p, p.width, p.height, SAVE_NAME + "vdo_" + ".mov", frate,       
 							MovieMaker.ANIMATION, MovieMaker.MEDIUM);
-
+			
+			gameId = String.valueOf(System.currentTimeMillis());
+			
 			initiated = true;
 		}
 	} 
 	
 	public String snap() {
 		String snapName = "Synco_snap_" + pn++ + ".png";
-		p.save(SAVE_NAME + snapName);
-		return snapName;
+		p.save(SAVE_NAME + gameId + '/' + snapName);
+		return gameId + '/' + snapName;
 	}
 	
 	private String getQRURL(String name) {
@@ -60,13 +65,16 @@ public class Recorder {
 		return fullURL;
 	}
 	
-	public void showQR(String gameId) {
-		// TODO add gameId folder
-		String QR_URL = getQRURL("html/sliedshow.html");
+	public void showQR() {
+		String slidShowURL = "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn;
+		String QR_URL = getQRURL(slidShowURL);
 		PImage onLine = p.loadImage(QR_URL, "png");
 		p.image(onLine, p.width/2 - QR_SIZE/2, p.height/2 - QR_SIZE/2);
 		p.noLoop();
-		//PApplet.open(QR_URL);
+		
+		// DEBUG only!!!
+//		PApplet.open(PUBLIC_URL + "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn);
+//		PApplet.open(QR_URL);
 	}
 
 

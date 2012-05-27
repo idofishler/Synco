@@ -34,13 +34,32 @@ padding: 2px 5px;
 
 <script type="text/javascript">
 
-var images = [
-["http://dl.dropbox.com/u/2805933/Synco_snap_0.png", "", "", ""],
-["http://dl.dropbox.com/u/2805933/Synco_snap_1.png", "", "", ""],
-["http://dl.dropbox.com/u/2805933/Synco_snap_2.png", "", "", ""],
-["http://dl.dropbox.com/u/2805933/Synco_snap_3.png", "", "", ""],
-["http://dl.dropbox.com/u/2805933/Synco_snap_4.png", "", "", ""],
-]
+function queryString(parameter) { 
+  var loc = location.search.substring(1, location.search.length);
+  var param_value = false;
+  var params = loc.split(",");
+  for (i=0; i<params.length;i++) {
+      param_name = params[i].substring(0,params[i].indexOf('='));
+      if (param_name == parameter) {
+          param_value = params[i].substring(params[i].indexOf('=')+1)
+      }
+  }
+  if (param_value) {
+      return param_value;
+  }
+  else {
+      return false; //Here determine return if no parameter is found
+  }
+}
+
+var gameId = queryString('gameId');
+var pn = queryString('picNum');
+
+var images = [];
+
+for (var i=0; i < pn; i++) {
+	images.push(["http://dl.dropbox.com/u/2805933/" + gameId + "/Synco_snap_" + i + ".png", "", "", ""]);
+}
 
 var mygallery=new simpleGallery({
 wrapperid: "simplegallery1", //ID of main gallery container,

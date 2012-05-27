@@ -193,16 +193,19 @@ public class VisualOutput extends PApplet {
 				}
 			}
 			if (key == 'p') {
-				recorder.showQR("");//doSnap();  // TODO show QR on exit
+				doSnap();
 			}
 		}
 		if (key == ESC) {
 			if (RECORDING_ENABLE /*&& record*/) {
-				recorder.showQR("gameIdHere");
 				recorder.stop();
 			}
 			mainController.getModel().getSoundModel().stop();
 			exit();
+		}
+		if (key == 's') {
+			recorder.showQR();
+			noLoop();
 		}
 	}
 
