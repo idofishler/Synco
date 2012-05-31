@@ -36,6 +36,7 @@ public class MainModel implements IModel {
 
 	public void init(long startTime) {
 		this.startTime = startTime;
+		soundModel.init();
 	}
 
 	/**

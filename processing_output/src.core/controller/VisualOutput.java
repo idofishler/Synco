@@ -3,7 +3,6 @@ package controller;
 
 import model.MainModel;
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.serial.Serial;
 import utils.Recorder;
 import view.MainView;
@@ -38,7 +37,6 @@ public class VisualOutput extends PApplet {
 	Serial inPort;
 	Serial outPort;
 	Recorder recorder;
-	private boolean record = false;
 
 
 	/**
@@ -152,9 +150,6 @@ public class VisualOutput extends PApplet {
 		}
 		mainController.doUI();
 
-		if (RECORDING_ENABLE && record) {
-			recorder.saveVideo();
-		}
 	}
 	
 	public void serialEvent(Serial p) {
@@ -186,32 +181,26 @@ public class VisualOutput extends PApplet {
 			mainController.event(1);
 		}
 		if (RECORDING_ENABLE) {
-			if (key == ' ') {
-				if (record) {
-					recorder.stop();
-					record = false;
-				} else {
-					record = true;
-				}
-			}
 			if (key == 'p') {
 				doSnap();
 			}
 			if (key == 's') {
-				recorder.showQR();
-				noLoop();
+				doShare();
 			}
 		}
 		if (key == 'r') {
 			reset();
 		}
 		if (key == ESC) {
-			if (RECORDING_ENABLE /*&& record*/) {
-				recorder.stop();
-			}
 			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
+	}
+
+	private void doShare() {
+		recorder.showQR();
+		mainController.getModel().getSoundModel().stop();
+		noLoop();	
 	}
 
 	private void reset() {
@@ -221,7 +210,12 @@ public class VisualOutput extends PApplet {
 		if (ARDUINO_OUTPUT_ON) {
 			outPort.write('R');
 		}
+		mainController.init();
 		initRecording();
+		
+		if (!looping) {
+			loop();
+		}
 		
 		// this ugly hack triggers another event that will cause the un-sync
 		try {
@@ -230,6 +224,7 @@ public class VisualOutput extends PApplet {
 			e.printStackTrace();
 		}
 		mainController.event(0);
+		mainController.event(1);
 		// end of ugly hack
 	}
 

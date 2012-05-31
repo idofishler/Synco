@@ -30,16 +30,14 @@ public class SoundModel implements IModel {
 	public SoundModel() {
 		heartBitSound = new MP3Player(HEART_BIT_SOUND_PATH);
 		channelPlayers = new ArrayList<MP3Player>();
-		//initChannels();
-		numOfChannels = INIT_NUM_OF_CHANNELS;
+		init();
 	}
 
-	private void initChannels() {
-		for (int i = 0; i < CHNNEL_PATHS.length; i++) {
-			MP3Player addedChannel = new MP3Player(CHNNEL_PATHS[i]);
-			addedChannel.play();
-			channelPlayers.add(addedChannel);
-		}
+	public void init() {
+		stop();
+		channelPlayers.clear();
+		numOfChannels = INIT_NUM_OF_CHANNELS;
+		prevNumOfChannels = numOfChannels;
 	}
 
 	@Override
@@ -53,14 +51,6 @@ public class SoundModel implements IModel {
 			channel.stop();
 		}
 		prevNumOfChannels = numOfChannels;
-	}
-
-	private void loopIfNeeded() {
-		for (MP3Player channel : channelPlayers) {
-			if (!channel.isRunning()) {
-				channel.play();
-			}
-		}
 	}
 
 	// Play hear bit sound for each event

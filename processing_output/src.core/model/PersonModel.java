@@ -9,6 +9,7 @@ public class PersonModel implements IModel {
 	
 	private static final int BEATS_TO_STORE = 10;
 	private static final long START_DELAY = 12 * 1000;
+	private static final long MAX_TIME_BTWEEN_BITS = 2 * 1000;
 
 	private String name;
 	private int heartRate;
@@ -127,7 +128,7 @@ public class PersonModel implements IModel {
 		double average = total / timeBetweenBeats.size();
 		heartRate = (int) (60 / (average / 1000));
 
-		return heartRate;
+		return isAlive()? heartRate: 0;
 	}
 
 	/**
@@ -186,6 +187,8 @@ public class PersonModel implements IModel {
 	}
 	
 	public boolean isAlive() {
-		return getHeartRate() > MIN_HEART_RATE && getHeartRate() < MAX_HEART_RATE;
+		boolean heartReateOk = heartRate > MIN_HEART_RATE && heartRate < MAX_HEART_RATE;
+		boolean lastBitOk = System.currentTimeMillis() - lastBeat < MAX_TIME_BTWEEN_BITS;
+		return heartReateOk && lastBitOk;
 	}
 }

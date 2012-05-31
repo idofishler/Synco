@@ -15,26 +15,12 @@ public class Recorder {
 
 	private PApplet p;
 	private int pn = 0;
-	MovieMaker mm;
 	private boolean initiated = false; 
-	private int frate = 15; // <<-- here is the frameRate 
-	private boolean videoOn = false; // this is used to indicate whether the video is capturing
-
-	public void saveVideo() {   
-		if (!videoOn) {
-			videoOn = true;
-		}
-		mm.addFrame();
-	} 
-
 
 	public void init(PApplet p) {
 		if (!initiated) {
 			this.p = p;
 		}
-
-		mm = new MovieMaker(p, p.width, p.height, SAVE_NAME + "vdo_" + ".mov", frate,       
-				MovieMaker.ANIMATION, MovieMaker.MEDIUM);
 
 		gameId = String.valueOf(System.currentTimeMillis());
 
@@ -75,14 +61,4 @@ public class Recorder {
 //		PApplet.open(PUBLIC_URL + "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn);
 //		PApplet.open(QR_URL);
 	}
-
-
-	public void stop() {
-		if (videoOn) {
-			mm.finish();
-			System.out.println("Video out put has been saved to '" + p.sketchPath + "/output'");
-		}
-		videoOn = false;
-	}
-
 }

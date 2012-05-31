@@ -19,7 +19,6 @@ public class MainController extends AbstractController {
 
 	public MainController(IModel model, IView view) {
 		super(model, view);
-		init();
 	}
 
 	@Override
@@ -34,14 +33,14 @@ public class MainController extends AbstractController {
 		handleSound();
 
 		// only make wave if "player is alive" pulse in the range
-		if (getModel().getPlayers()[identifier].isAlive()) {
+		//if (getModel().getPlayers()[identifier].isAlive()) {
 		
 			// this long line is making the water move where the player center is at
 			getModel().getWaterModel().
 			makeTurbulence(getModel().getPlayers()[identifier].getCenterX(),
 					getModel().getPlayers()[identifier].getCenterY());
 			
-		}
+		//}
 	}
 
 	private void handleSound() {
