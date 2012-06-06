@@ -30,7 +30,7 @@ public class MainController extends AbstractController {
 		// start the player with the first pulse
 		getModel().startPlayer(identifier);
 
-		handleSound();
+		handleSound(identifier);
 
 		// only make wave if "player is alive" pulse in the range
 		//if (getModel().getPlayers()[identifier].isAlive()) {
@@ -43,11 +43,11 @@ public class MainController extends AbstractController {
 		//}
 	}
 
-	private void handleSound() {
+	private void handleSound(int identifier) {
 		SoundModel i_SoundModel = getModel().getSoundModel();
 		
 		// make pulse sound anyway for each event
-		i_SoundModel.playPulse();
+		i_SoundModel.playPulse(identifier);
 		
 	}
 
