@@ -28,11 +28,14 @@ public class SoundModel implements IModel {
 		"resource/channel4_1.mp3",	
 	};
 	
-	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_1;
+	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_0;
 	private static final String GATE_KEEPER_SONG_PATH = "resource/01 Gatekeeper.mp3";
+
+	private static final int STOP_PULSE_TH = 1;
 
 	private int numOfChannels;
 	private int prevNumOfChannels;
+	private boolean playHeartBitSound;
 
 	//private MP3Player heartBitSound;
 	private MP3Player heartBitSound_L;
@@ -54,6 +57,7 @@ public class SoundModel implements IModel {
 		channelPlayers.clear();
 		numOfChannels = INIT_NUM_OF_CHANNELS;
 		prevNumOfChannels = numOfChannels;
+		playHeartBitSound = true;
 	}
 
 	@Override
@@ -67,14 +71,21 @@ public class SoundModel implements IModel {
 			channel.stop();
 		}
 		prevNumOfChannels = numOfChannels;
+		if (numOfChannels > STOP_PULSE_TH) {
+			playHeartBitSound = false;
+		} else {
+			playHeartBitSound = true;
+		}
 	}
 
 	// Play hear bit sound for each event
 	public void playPulse(int identifier) {
-		if (identifier == 0) {
-			heartBitSound_R.play();
-		} else if (identifier == 1) {
-			heartBitSound_L.play();
+		if (playHeartBitSound) {
+			if (identifier == 0) {
+				heartBitSound_R.play();
+			} else if (identifier == 1) {
+				heartBitSound_L.play();
+			}			
 		}
 		//heartBitSound.play();
 	}
