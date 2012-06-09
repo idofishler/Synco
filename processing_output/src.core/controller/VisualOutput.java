@@ -188,6 +188,17 @@ public class VisualOutput extends PApplet {
 				doShare();
 			}
 		}
+		if (ARDUINO_OUTPUT_ON) {
+			if (key == '+') {
+				outPort.write('+');
+			}
+			if (key == '-') {
+				outPort.write('-');
+			}
+			if (key == 't') {
+				outPort.write('t');
+			}
+		}
 		if (key == 'r') {
 			reset();
 		}

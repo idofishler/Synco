@@ -3,6 +3,7 @@
 
 #define INIT_STEPS 30
 #define MAX_STEPS 460
+#define CAL_MOVE 5
 #define P1 7
 #define P2 8
 
@@ -53,6 +54,15 @@ void loop() {
             //motor.release();
             steps++;
           }
+        }
+        else if (val == '+') {
+          move(CAL_MOVE);
+        }
+        else if (val == '-') {
+          move(-CAL_MOVE);
+        }
+        else if (val == 't') {
+          rangeTest();
         }
         writeToEEPROM(steps);
     }
