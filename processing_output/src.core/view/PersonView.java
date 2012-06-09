@@ -64,9 +64,9 @@ public class PersonView extends AbstractView {
 		p.fill(255);
 		
 		if (getCenterX() > p.width / 2) {
-			p.text(String.valueOf(rate), p.width - 35, 10, 20, 20);
+			p.text(String.valueOf(rate), p.width - 35, 10, 30, 30);
 		} else {
-			p.text(String.valueOf(rate), 25, 10, 20, 20);			
+			p.text(String.valueOf(rate), 25, 10, 30, 30);			
 		}
 		p.noFill();
 	}
