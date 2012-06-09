@@ -20,9 +20,9 @@ void setup() {
 }
 
 void rangeTest() {
-  motor.step(MAX_STEPS, FORWARD, SINGLE);
+  motor.step(MAX_STEPS-INIT_STEPS, FORWARD, SINGLE);
   delay(1000);
-  motor.step(MAX_STEPS, BACKWARD, SINGLE); 
+  motor.step(MAX_STEPS-INIT_STEPS, BACKWARD, SINGLE); 
   motor.release();
 }
 
