@@ -2,7 +2,7 @@
 #include <EEPROM.h>
 
 #define INIT_STEPS 30
-#define MAX_STEPS 370
+#define MAX_STEPS 460
 #define P1 7
 #define P2 8
 
@@ -14,11 +14,16 @@ int steps = INIT_STEPS;
 void setup() {
         Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
         motor.setSpeed(10);  // 10 rpm
-        //EEPROM.write(P,INIT_STEPS);
         resetPos();
-        //motor.step(100, FORWARD, SINGLE); 
-        //motor.release();
+        //rangeTest();
         delay(1000);
+}
+
+void rangeTest() {
+  motor.step(MAX_STEPS, FORWARD, SINGLE);
+  delay(1000);
+  motor.step(MAX_STEPS, BACKWARD, SINGLE); 
+  motor.release();
 }
 
 void resetPos() {

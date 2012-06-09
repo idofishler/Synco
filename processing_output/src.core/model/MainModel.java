@@ -159,4 +159,14 @@ public class MainModel implements IModel {
 	public SoundModel getSoundModel() {
 		return this.soundModel;
 	}
+
+	public void pulse(int identifier) {
+		getPlayers()[identifier].pulse();
+	}
+
+	public void makeTurbulance(int identifier) {
+		getWaterModel().makeTurbulence(	
+				getPlayers()[identifier].getCenterX(),
+				getPlayers()[identifier].getCenterY());
+	}
 }
