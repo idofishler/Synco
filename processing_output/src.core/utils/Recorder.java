@@ -8,6 +8,7 @@ public class Recorder {
 
 	private static final String PUBLIC_URL = "http://dl.dropbox.com/u/2805933/";
 	private static final int QR_SIZE = 200;
+	private static final boolean DEBUG = true;
 
 
 	private String SAVE_NAME ="/Users/idofishler/Dropbox/public/"; // << here is the name of the file
@@ -57,8 +58,9 @@ public class Recorder {
 		p.image(onLine, p.width/2 - QR_SIZE/2, p.height/2 - QR_SIZE/2);
 		p.noLoop();
 
-		// DEBUG only!!!
-//		PApplet.open(PUBLIC_URL + "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn);
-//		PApplet.open(QR_URL);
+		if (DEBUG) {
+			PApplet.open(PUBLIC_URL + "html/sliedshow.html?gameId=" + gameId + ",picNum=" + pn);
+			PApplet.open(QR_URL);
+		}
 	}
 }
