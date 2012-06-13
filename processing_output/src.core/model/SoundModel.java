@@ -98,7 +98,7 @@ public class SoundModel implements IModel {
 		}
 	}
 
-	// Play hear bit sound for each event - in separate channels for defferent players
+	// Play hear bit sound for each event - in separate channels for different players
 	// Left player - gets the left channel, Right gets the right.
 	public void playPulse(int identifier) {
 		if (playHeartBitSound) {
