@@ -26,11 +26,22 @@ public class SoundModel implements IModel {
 		"resource/channel3_1.mp3",
 		"resource/channel4_1.mp3",	
 	};
+	private static final String[] CHNNEL_PATHS_2 = { 
+		"resource/channel0_2.mp3",
+		"resource/channel1_2.mp3",
+		"resource/channel2_2.mp3",
+		"resource/channel3_2.mp3",
+		"resource/channel4_2.mp3",
+		"resource/channel5_2.mp3",
+		"resource/channel6_2.mp3",
+	};
 	
-	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_1;
+	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_2;
 	private static final String GATE_KEEPER_SONG_PATH = "resource/01 Gatekeeper.mp3";
 
 	private static final int STOP_PULSE_TH = 1;
+
+	private static final boolean ASAF_SONG = CHNNEL_PATHS == CHNNEL_PATHS_2;
 
 	private int numOfChannels;
 	private int prevNumOfChannels;
@@ -69,18 +80,8 @@ public class SoundModel implements IModel {
 		for (String channelName : CHNNEL_PATHS) {
 			MP3Player channel = new MP3Player(channelName);
 			channel.play();
-			channelPlayers.add(channel);
-		}
-
-		// This was added to let the channel start a bit before I mute it
-		for (MP3Player channel : channelPlayers) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} 
-			// wake up
 			channel.mute();				
+			channelPlayers.add(channel);
 		}
 	}
 
@@ -88,11 +89,23 @@ public class SoundModel implements IModel {
 	public void update() {
 		if (prevNumOfChannels < numOfChannels) {
 			MP3Player channel = channelPlayers.get(prevNumOfChannels);
+			if (ASAF_SONG) {
+				if (prevNumOfChannels > 0) {					
+					MP3Player oldChannel = channelPlayers.get(prevNumOfChannels-1);
+					oldChannel.fadeOut();
+				}
+			}
 			channel.fadeIn();
 			prevNumOfChannels++;
 		} else if (prevNumOfChannels > numOfChannels) {
 			MP3Player channel = channelPlayers.get(numOfChannels);
 			channel.fadeOut();
+			if (ASAF_SONG) {
+				if (numOfChannels > 0) {
+					MP3Player newChannel = channelPlayers.get(numOfChannels-1);
+					newChannel.fadeIn();
+				}
+			}
 			prevNumOfChannels--;
 		}
 		if (numOfChannels > STOP_PULSE_TH) {

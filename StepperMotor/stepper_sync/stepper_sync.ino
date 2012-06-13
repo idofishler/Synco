@@ -1,7 +1,7 @@
 #include <AFMotor.h>
 #include <EEPROM.h>
 
-#define INIT_STEPS 30
+#define INIT_STEPS 0
 #define MAX_STEPS 460
 #define CAL_MOVE 5
 #define P1 7

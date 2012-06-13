@@ -18,16 +18,9 @@ public class MainView extends AbstractView {
 		
 		// Start the water view
 		waterView = new WaterView(p, getModel().getWaterModel());
-		// start the flower view
-		//flowerView = new FlowerView(p, getModel().getFlowerModel());
 	}
 
 	public void initPlayers() {
-
-		// Set the player position (in the model)
-		for (int i = 0; i < MainModel.NO_OF_PLAYERS; i++) {
-			getModel().setPersonPos(i, p.width, p.height);
-		}
 
 		// init the PersonView[] from these PersonModels
 		PersonModel[] playerModels = getModel().getPlayers();

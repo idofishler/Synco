@@ -106,6 +106,7 @@ public class MP3Player {
 		if (audio instanceof JavaSoundAudioDevice)
 		{
 			JavaSoundAudioDevice jsAudio = (JavaSoundAudioDevice) audio;
+			
 			jsAudio.fadeOut(FADE_TIME);
 
 			if (DEBUG) {
@@ -119,6 +120,12 @@ public class MP3Player {
 		if (audio instanceof JavaSoundAudioDevice)
 		{
 			JavaSoundAudioDevice jsAudio = (JavaSoundAudioDevice) audio;
+
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			jsAudio.mute();
 

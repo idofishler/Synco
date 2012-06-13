@@ -36,6 +36,9 @@ public class MainModel implements IModel {
 
 	public void init(long startTime) {
 		this.startTime = startTime;
+		for (int i = 0; i < NO_OF_PLAYERS; i++) {
+			setPersonPos(i, STAGE_WIDTH, STAGE_HEIGHT);
+		}
 		soundModel.init();
 	}
 
@@ -78,13 +81,14 @@ public class MainModel implements IModel {
 	}
 
 	public void setPersonPos(int index, int x, int y) {
+		int space = (int) ((x - MAX_DISTANCE_FACTOR*x) * 0.5);
 		switch (index) {
 		case 0:
-			getPlayers()[index].setCenterX(x - (x / 4));
+			getPlayers()[index].setCenterX(x - space);
 			getPlayers()[index].setCenterY(y / 2);
 			break;
 		case 1:
-			getPlayers()[index].setCenterX(x / 4);
+			getPlayers()[index].setCenterX(space);
 			getPlayers()[index].setCenterY(y / 2);
 			break;
 		default:

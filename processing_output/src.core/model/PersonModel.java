@@ -9,7 +9,7 @@ public class PersonModel implements IModel {
 	
 	private static final int BEATS_TO_STORE = 10;
 	private static final long START_DELAY = 12 * 1000;
-	private static final long MAX_TIME_BTWEEN_BITS = 2 * 1000;
+	private static final long MAX_TIME_BTWEEN_BITS = 3 * 1000;
 
 	private String name;
 	private int heartRate;
