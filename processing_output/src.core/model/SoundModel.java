@@ -69,14 +69,18 @@ public class SoundModel implements IModel {
 		for (String channelName : CHNNEL_PATHS) {
 			MP3Player channel = new MP3Player(channelName);
 			channel.play();
-			// This was added to let the channel start a bit before I mute it
+			channelPlayers.add(channel);
+		}
+
+		// This was added to let the channel start a bit before I mute it
+		for (MP3Player channel : channelPlayers) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			} // wake up
+			} 
+			// wake up
 			channel.mute();				
-			channelPlayers.add(channel);
 		}
 	}
 

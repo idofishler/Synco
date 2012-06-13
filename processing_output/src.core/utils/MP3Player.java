@@ -11,6 +11,8 @@ package utils;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
+import javax.sound.sampled.FloatControl;
+
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.Player;
@@ -81,7 +83,16 @@ public class MP3Player {
 		if (audio instanceof JavaSoundAudioDevice)
 		{
 			JavaSoundAudioDevice jsAudio = (JavaSoundAudioDevice) audio;
-			jsAudio.fadeIn(FADE_TIME);
+			FloatControl volControl = jsAudio.getVolControl();
+			int updatePeriod = volControl.getUpdatePeriod();
+//			if (updatePeriod != -1) {
+				jsAudio.fadeIn(FADE_TIME);
+//			} else {
+//				float precision = volControl.getPrecision();
+//				while (volControl.getValue() <= (volControl.getMaximum() * 0.5)) {
+//					setVolume(volControl.getValue() + precision);
+//				}
+//			}
 
 			if (DEBUG) {
 				System.out.println("Fade in: " + filename);
