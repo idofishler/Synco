@@ -21,14 +21,14 @@ public class SoundModel implements IModel {
 		"resource/channel4.mp3",	
 	};
 	private static final String[] CHNNEL_PATHS_1 = { 
-		"resource/channel0_1.mp3",
 		"resource/channel1_1.mp3",
+		"resource/channel0_1.mp3",
 		"resource/channel2_1.mp3",
 		"resource/channel3_1.mp3",
 		"resource/channel4_1.mp3",	
 	};
 	
-	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_0;
+	private static final String[] CHNNEL_PATHS = CHNNEL_PATHS_1;
 	private static final String GATE_KEEPER_SONG_PATH = "resource/01 Gatekeeper.mp3";
 
 	private static final int STOP_PULSE_TH = 1;
@@ -42,14 +42,19 @@ public class SoundModel implements IModel {
 	private MP3Player heartBitSound_R;
 	private ArrayList<MP3Player> channelPlayers;
 
+//	private MP3Player song;
+//	private int gain = 0;
+
 
 
 	public SoundModel() {
-		//heartBitSound = new MP3Player(HEART_BIT_SOUND_PATH);
 		heartBitSound_L = new MP3Player(HEART_BIT_SOUND_PATH_L);
 		heartBitSound_R = new MP3Player(HEART_BIT_SOUND_PATH_R);
 		channelPlayers = new ArrayList<MP3Player>();
-		init();
+		
+//		song = new MP3Player(GATE_KEEPER_SONG_PATH);
+//		song.play();
+//		song.setVolume(0);
 	}
 
 	public void init() {
@@ -58,19 +63,35 @@ public class SoundModel implements IModel {
 		numOfChannels = INIT_NUM_OF_CHANNELS;
 		prevNumOfChannels = numOfChannels;
 		playHeartBitSound = true;
+		loadAllChannelsAtOnce();
+	}
+
+	private void loadAllChannelsAtOnce() {
+		for (String channelName : CHNNEL_PATHS) {
+			MP3Player channel = new MP3Player(channelName);
+			channel.play();
+			// This was added to let the channel start a bit before I mute it
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} // wake up
+			channel.mute();				
+			channelPlayers.add(channel);
+		}
 	}
 
 	@Override
 	public void update() {
 		if (prevNumOfChannels < numOfChannels) {
-			MP3Player channel = new MP3Player(CHNNEL_PATHS[prevNumOfChannels]);
-			channel.play();
-			channelPlayers.add(channel);
+			MP3Player channel = channelPlayers.get(prevNumOfChannels);
+			channel.fadeIn();
+			prevNumOfChannels++;
 		} else if (prevNumOfChannels > numOfChannels) {
-			MP3Player channel = channelPlayers.remove(numOfChannels);
-			channel.stop();
+			MP3Player channel = channelPlayers.get(numOfChannels);
+			channel.fadeOut();
+			prevNumOfChannels--;
 		}
-		prevNumOfChannels = numOfChannels;
 		if (numOfChannels > STOP_PULSE_TH) {
 			playHeartBitSound = false;
 		} else {
@@ -78,7 +99,8 @@ public class SoundModel implements IModel {
 		}
 	}
 
-	// Play hear bit sound for each event
+	// Play hear bit sound for each event - in separate channels for defferent players
+	// Left player - gets the left channel, Right gets the right.
 	public void playPulse(int identifier) {
 		if (playHeartBitSound) {
 			if (identifier == 0) {
@@ -87,7 +109,6 @@ public class SoundModel implements IModel {
 				heartBitSound_L.play();
 			}			
 		}
-		//heartBitSound.play();
 	}
 
 	public void playSongChannels(int distance) {
@@ -103,4 +124,14 @@ public class SoundModel implements IModel {
 			}
 		}
 	}
+	
+//	public void volumeUp() {
+//		gain += 1;
+//		song.setVolume(gain);
+//	}
+//	
+//	public void volumeDown() {
+//		gain -= 1;
+//		song.setVolume(gain);
+//	}
 }
