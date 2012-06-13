@@ -2,7 +2,6 @@ package utils;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import processing.video.MovieMaker;
 
 public class Recorder {
 

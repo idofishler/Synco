@@ -8,3 +8,5 @@ StepperMotor/.DS_Store
 Adafruit-Motor-Shield-library
 
 *.DS_Store
+
+StepperMotor/stepper_sync/stepper_sync.ino

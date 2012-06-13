@@ -2,7 +2,7 @@ package view;
 
 import model.MainModel;
 import model.PersonModel;
-import processing.core.*;
+import processing.core.PApplet;
 
 public class MainView extends AbstractView {
 

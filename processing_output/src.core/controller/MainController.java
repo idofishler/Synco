@@ -29,17 +29,17 @@ public class MainController extends AbstractController {
 		// start the player with the first pulse
 		getModel().startPlayer(identifier);
 
-		handleSound();
+		handleSound(identifier);
 
 		// making the water move where the player center is at
 		getModel().makeTurbulance(identifier);
 	}
 
-	private void handleSound() {
+	private void handleSound(int identifier) {
 		SoundModel i_SoundModel = getModel().getSoundModel();
 		
 		// make pulse sound anyway for each event
-		i_SoundModel.playPulse();
+		i_SoundModel.playPulse(identifier);
 		
 	}
 

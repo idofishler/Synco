@@ -1,6 +1,7 @@
 package view;
-import model.*;
-import processing.core.*;
+import model.CircleModel;
+import model.IModel;
+import processing.core.PApplet;
 
 public class CircleView extends AbstractView {
 	
