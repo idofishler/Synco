@@ -17,8 +17,8 @@ import javazoom.jl.player.Player;
 
 
 public class MP3Player {
-	private static final int FADE_TIME = 1000 * 1000 * 4; // in microseconds
-	private static final boolean DEBUG = false;
+	private static final int FADE_TIME = 1000 * 1000 * 2; // in microseconds
+	private static final boolean DEBUG = true;
 	private String filename;
 	private Player player;
 
