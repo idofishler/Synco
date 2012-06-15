@@ -13,13 +13,16 @@ public class MainModel implements IModel {
 	public static final int STAGE_HEIGHT = 600;
 	public static final float MAX_DISTANCE_FACTOR = 0.8f;
 
-	private static final int RATE_THRESHOLD = 25;
+	private static final int INIT_RATE_THRESHOLD = 15;
+	private static final int MAX_RATE_THRESHOLD = 25;
+	private static final int MIN_RATE_THRESHOLD = 10;
 	private static final double PULSE_THRESHOLD = 1 * 1000; // seconds
 	
 	private PersonModel[] players;
 	private WaterModel waterModel;
 	private SoundModel soundModel;
 	private long startTime;
+	private int rateThreshold;
 
 
 	/**
@@ -39,6 +42,7 @@ public class MainModel implements IModel {
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			setPersonPos(i, STAGE_WIDTH, STAGE_HEIGHT);
 		}
+		rateThreshold = INIT_RATE_THRESHOLD;
 		soundModel.init();
 	}
 
@@ -106,6 +110,11 @@ public class MainModel implements IModel {
 			players[1].setCenterX(++leftPlayerXpos);
 		}
 		soundModel.playSongChannels(distance);
+		
+		// make it harder to sync if they are synced
+		if (rateThreshold > MIN_RATE_THRESHOLD) {
+			rateThreshold--;
+		}
 	}
 
 	public void unsync() {
@@ -120,6 +129,11 @@ public class MainModel implements IModel {
 		}
 
 		soundModel.playSongChannels(distance);
+		
+		// make it easier to sync if they are not synced
+		if (rateThreshold < MAX_RATE_THRESHOLD) {
+			rateThreshold++;
+		}
 	}
 	
 	public int getDistance() {
@@ -146,7 +160,7 @@ public class MainModel implements IModel {
 
 		boolean areAlive = players[0].isAlive() && players[1].isAlive();
 
-		if (areAlive && pulseGap < PULSE_THRESHOLD && rateGap < RATE_THRESHOLD) {
+		if (areAlive && pulseGap < PULSE_THRESHOLD && rateGap < rateThreshold) {
 			return true;
 		}
 		return false;

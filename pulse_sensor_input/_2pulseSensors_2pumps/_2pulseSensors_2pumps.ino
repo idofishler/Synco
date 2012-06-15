@@ -10,24 +10,26 @@ It also has an attract mode, set by recieving 'R'  as an on\off toggle.
 To resample room lighting, use 'G'
 
 27/05 - Added "First Time" ripple
-            Fixed Attract Mode
-            Heightened NOISE_THRESHOLD //Dor
-            
-            
+           Fixed Attract Mode
+           Heightened NOISE_THRESHOLD //Dor
+
+
 24/05 - Added Attract Mode //Dor
 
 05/06 - seperated noise between devices, improved pump tempo
 
-12/06 Finally fixed goddamn noise by staying relative to baseline. 
-         Added 'G' for re-acquiring baseline (make sure sensors are exposed to room lighting) //Dor
+12/06 Finally fixed goddamn noise by staying relative to baseline.
+        Added 'G' for re-acquiring baseline (make sure sensors are exposed to room lighting) //Dor
 */
-
+boolean enableAttractMode = false; //Enables attract mode
 boolean DEBUG = false; //Debug shows post process data submitted on heartbeat, and the BPM taken at that moment
-boolean SHOWRAWDATA = false; //Show raw signal data every 300ms (overrides DEBUG and regular output)
-boolean isAttractMode= !SHOWRAWDATA && !DEBUG;
+boolean SHOWRAWDATA = false; //Show raw signal data every 300ms (overrides DEBUG and regular output)\
+
+boolean isAttractMode= !SHOWRAWDATA && !DEBUG && enableAttractMode;
 int NOISE_THRESHOLD = 100;
 //Threshold for length of heartbeat
-int pumpBeatThreshold = 8;
+int pumpBeatThreshold = 20;
+int pumpThresholdShorten = 12;
 
 
 
@@ -107,8 +109,8 @@ int base_right = 0;
 
 void GetBase()
 {
-      base_left = analogRead(pulsePinL);
-      base_right = analogRead(pulsePinR);
+     base_left = analogRead(pulsePinL);
+     base_right = analogRead(pulsePinR);
 }
 
 
@@ -122,7 +124,7 @@ TCCR1A = 0x00; // DISABLE OUTPUTS AND BREAK PWM ON DIGITAL PINS 9 & 10
 TCCR1B = 0x11; // GO INTO 'PHASE AND FREQUENCY CORRECT' MODE, NO PRESCALER
 TCCR1C = 0x00; // DON'T FORCE COMPARE
 TIMSK1 = 0x01; // ENABLE OVERFLOW INTERRUPT (TOIE1)
-ICR1 = 8000;   // TRIGGER TIMER INTERRUPT EVERY 1mS 
+ICR1 = 8000;   // TRIGGER TIMER INTERRUPT EVERY 1mS
 sei();         // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
 GetBase();
 }
@@ -130,89 +132,89 @@ GetBase();
 //****ATTRACT MODE METHODS
 void enterAttractMode()
 {
-    digitalWrite(pumpPinR, LOW);
-    digitalWrite(pumpPinL, LOW);
-    isAttractMode=true;
+   digitalWrite(pumpPinR, LOW);
+   digitalWrite(pumpPinL, LOW);
+   isAttractMode=true;
 }
 
 void attractMode()
 {
-      attractModeCounter++;
-      if (attractModeCounter>=attractModePulseLength)
-      {
-             attractModeBeatCounter++;
-             if (attractModeBeatCounter==1)
-             {
-                  digitalWrite(pumpPinR, HIGH);
-                  digitalWrite(pumpPinL, HIGH);
-             } 
-                   else if (attractModeBeatCounter >= attractModeBeatLength)
+     attractModeCounter++;
+     if (attractModeCounter>=attractModePulseLength)
+     {
+            attractModeBeatCounter++;
+            if (attractModeBeatCounter==1)
             {
-                  digitalWrite(pumpPinR, LOW);
-                  digitalWrite(pumpPinL, LOW);
-                  attractModeBeatCounter=0;
-                  attractModeCounter =  0;
+                 digitalWrite(pumpPinR, HIGH);
+                 digitalWrite(pumpPinL, HIGH);
             }
-      }
+                  else if (attractModeBeatCounter >= attractModeBeatLength)
+           {
+                 digitalWrite(pumpPinR, LOW);
+                 digitalWrite(pumpPinL, LOW);
+                 attractModeBeatCounter=0;
+                 attractModeCounter =  0;
+           }
+     }
 }
 
 void exitAttractMode()
 {
-    digitalWrite(pumpPinR, LOW);
-    digitalWrite(pumpPinL, LOW);
-    isAttractMode=false;
-    //Re-enable "is first time"
-    isFirstTime = true;
-    isFirstTimeLeft=false;
-    isFirstTimeRight=false;
+   digitalWrite(pumpPinR, LOW);
+   digitalWrite(pumpPinL, LOW);
+   isAttractMode=false;
+   //Re-enable "is first time"
+   isFirstTime = true;
+   isFirstTimeLeft=false;
+   isFirstTimeRight=false;
 }
 //****ATTRACT MODE METHODS
 
 //****FIRST TIME METHODS
 void doFirstTime()
 {
-          if (isFirstTimeCounter==0)
-        {
-                  digitalWrite(pumpPinR, HIGH);
-                  digitalWrite(pumpPinL, HIGH);
-        }
-        isFirstTimeCounter++;
-        if (isFirstTimeCounter >= isFirstTimeLength)
-        {
-                  digitalWrite(pumpPinR, LOW);
-                  digitalWrite(pumpPinL, LOW);
-                  isFirstTime=false;                
-                  isFirstTimeCounter=0;
-        }
+         if (isFirstTimeCounter==0)
+       {
+                 digitalWrite(pumpPinR, HIGH);
+                 digitalWrite(pumpPinL, HIGH);
+       }
+       isFirstTimeCounter++;
+       if (isFirstTimeCounter >= isFirstTimeLength)
+       {
+                 digitalWrite(pumpPinR, LOW);
+                 digitalWrite(pumpPinL, LOW);
+                 isFirstTime=false;
+                 isFirstTimeCounter=0;
+       }
 }
 //****FIRST TIME METHODS
 
 void loop(){
-  FadeR -= 15;
-  FadeR = constrain(FadeR,0,255);
+ FadeR -= 15;
+ FadeR = constrain(FadeR,0,255);
 //  analogWrite(11,FadeR);
-  FadeL -= 15;
-  FadeL = constrain(FadeL,0,255);
-  
-  //analogWrite(11,FadeL);
-   if (Serial.read() == 'R' )
-  {
-        if (isAttractMode)
-        {
-              exitAttractMode();
-        }
-         else
-          {
-               enterAttractMode();
-          }
-  } 
-  
-  if (Serial.read() == 'G')
-  {
-      GetBase();
-  } 
-  
-   delay(20);                    //  take a break
+ FadeL -= 15;
+ FadeL = constrain(FadeL,0,255);
+
+ //analogWrite(11,FadeL);
+/*if (Serial.read() == 'R'  && enableAttractMode)
+ {
+       if (isAttractMode)
+       {
+             exitAttractMode();
+       }
+        else
+         {
+              enterAttractMode();
+         }
+ }
+
+ if (Serial.read() == 'G')
+ {
+     GetBase();
+ }*/
+
+  delay(20);                    //  take a break
 }
 
 
@@ -222,13 +224,13 @@ ISR(TIMER1_OVF_vect){ // triggered every time Timer 1 overflows
 // Timer 1 makes sure that we take a reading every milisecond
 if (isAttractMode)
 {
-      attractMode();
-      return;
+     attractMode();
+     return;
 }
 if (isFirstTime && isFirstTimeLeft && isFirstTimeRight)
 {
-      doFirstTime();
-      return;
+     doFirstTime();
+     return;
 }
 
 
@@ -238,11 +240,11 @@ SignalL = analogRead(pulsePinL);
 //Clear noise
 if ( (SignalR - base_right) < NOISE_THRESHOLD)
 {
-    SignalR = base_right;
+   SignalR = base_right;
 }
 if ((SignalL - base_left) < NOISE_THRESHOLD)
 {
-    SignalL = base_left;
+   SignalL = base_left;
 }
 
 // First normailize the waveform around 0
@@ -250,182 +252,190 @@ readingsR += SignalR; // take a running total
 readingsL += SignalL; // take a running total
 
 sampleCounter++;     // we do this every milisecond. this timer is used as a clock
-
 sampleCycle++;
 
 if ((sampleCounter %300) == 0){   // adjust as needed
-   if (SHOWRAWDATA)
-   {
-      Serial.print("L: ");
-      Serial.print(SignalL);
-      Serial.print(" R: ");
-      Serial.println(SignalR);
-   }
-  offsetR = readingsR / 300;        // average the running total
-  offsetL = readingsL / 300;       
+  if (SHOWRAWDATA)
+  {
+     Serial.print("L: ");
+     Serial.print(SignalL);
+     Serial.print(" R: ");
+     Serial.println(SignalR);
+  }
+ offsetR = readingsR / 300;        // average the running total
+ offsetL = readingsL / 300;
 
-  readingsR = 0;                   // reset running total
-  readingsL = 0;                  
+ readingsR = 0;                   // reset running total
+ readingsL = 0;
 }
 NSignalR = SignalR - offsetR;        // normalizing here
 NSignalL = SignalL - offsetL;        // normalizing here
 
 // IF IT'S THE FIRST TIME THROUGH THE SKETCH, SEED THE FILTER WITH CURRENT DATA
 if (first = true){
-    for (int pos=0; pos<2; pos++){
-      for (int i=0; i<4; i++){
-        if (pos == 0) {
-            Lxv[pos][i] = Lyv[pos][i] = NSignalR <<10;  // seed the lowpass filter
-            Hxv[pos][i] = Hyv[pos][i] = NSignalR <<10;  // seed the highpass filter
-        } else if (pos == 1) {
-            Lxv[pos][i] = Lyv[pos][i] = NSignalL <<10;  // seed the lowpass filter
-            Hxv[pos][i] = Hyv[pos][i] = NSignalL <<10;  // seed the highpass filter
-        }
-      }
-    }
+   for (int pos=0; pos<2; pos++){
+     for (int i=0; i<4; i++){
+       if (pos == 0) {
+           Lxv[pos][i] = Lyv[pos][i] = NSignalR <<10;  // seed the lowpass filter
+           Hxv[pos][i] = Hyv[pos][i] = NSignalR <<10;  // seed the highpass filter
+       } else if (pos == 1) {
+           Lxv[pos][i] = Lyv[pos][i] = NSignalL <<10;  // seed the lowpass filter
+           Hxv[pos][i] = Hyv[pos][i] = NSignalL <<10;  // seed the highpass filter
+       }
+     }
+   }
 first = false;      // only seed once please
 }
 // THIS IS THE BANDPAS FILTER. GENERATED AT www-users.cs.york.ac.uk/~fisher/mkfilter/trad.html
 //  BUTTERWORTH LOWPASS ORDER = 3; SAMPLERATE = 1mS; CORNER = 5Hz
 
 for (int pos=0; pos<2; pos++){
-    Lxv[pos][0] = Lxv[pos][1]; Lxv[pos][1] = Lxv[pos][2]; Lxv[pos][2] = Lxv[pos][3];
-    if (pos == 0) {
-        Lxv[pos][3] = NSignalR<<10;    // insert the normalized data into the lowpass filter
-    } else if (pos == 1) {
-        Lxv[pos][3] = NSignalL<<10;    // insert the normalized data into the lowpass filter   
-    }
-    Lyv[pos][0] = Lyv[pos][1]; Lyv[pos][1] = Lyv[pos][2]; Lyv[pos][2] = Lyv[pos][3];
-    Lyv[pos][3] = (Lxv[pos][0] + Lxv[pos][3]) + 3 * (Lxv[pos][1] + Lxv[pos][2])
-          + (3846 * Lyv[pos][0]) + (-11781 * Lyv[pos][1]) + (12031 * Lyv[pos][2]);
+   Lxv[pos][0] = Lxv[pos][1]; Lxv[pos][1] = Lxv[pos][2]; Lxv[pos][2] = Lxv[pos][3];
+   if (pos == 0) {
+       Lxv[pos][3] = NSignalR<<10;    // insert the normalized data into the lowpass filter
+   } else if (pos == 1) {
+       Lxv[pos][3] = NSignalL<<10;    // insert the normalized data into the lowpass filter
+   }
+   Lyv[pos][0] = Lyv[pos][1]; Lyv[pos][1] = Lyv[pos][2]; Lyv[pos][2] = Lyv[pos][3];
+   Lyv[pos][3] = (Lxv[pos][0] + Lxv[pos][3]) + 3 * (Lxv[pos][1] + Lxv[pos][2])
+         + (3846 * Lyv[pos][0]) + (-11781 * Lyv[pos][1]) + (12031 * Lyv[pos][2]);
 //  Butterworth; Highpass; Order = 3; Sample Rate = 1mS; Corner = .8Hz
-    Hxv[pos][0] = Hxv[pos][1]; Hxv[pos][1] = Hxv[pos][2]; Hxv[pos][2] = Hxv[pos][3];
-    Hxv[pos][3] = Lyv[pos][3] / 4116; // insert lowpass result into highpass filter
-    Hyv[pos][0] = Hyv[pos][1]; Hyv[pos][1] = Hyv[pos][2]; Hyv[pos][2] = Hyv[pos][3];
-    Hyv[pos][3] = (Hxv[pos][3]-Hxv[pos][0]) + 3 * (Hxv[pos][1] - Hxv[pos][2])
-          + (8110 * Hyv[pos][0]) + (-12206 * Hyv[pos][1]) + (12031 * Hyv[pos][2]);
+   Hxv[pos][0] = Hxv[pos][1]; Hxv[pos][1] = Hxv[pos][2]; Hxv[pos][2] = Hxv[pos][3];
+   Hxv[pos][3] = Lyv[pos][3] / 4116; // insert lowpass result into highpass filter
+   Hyv[pos][0] = Hyv[pos][1]; Hyv[pos][1] = Hyv[pos][2]; Hyv[pos][2] = Hyv[pos][3];
+   Hyv[pos][3] = (Hxv[pos][3]-Hxv[pos][0]) + 3 * (Hxv[pos][1] - Hxv[pos][2])
+         + (8110 * Hyv[pos][0]) + (-12206 * Hyv[pos][1]) + (12031 * Hyv[pos][2]);
 }
 FSignalR = Hyv[0][3] >> Scale;  // result of highpass shift-scaled
 FSignalL = Hyv[1][3] >> Scale;  // result of highpass shift-scaled
 
 //PLAY AROUND WITH THE SHIFT VALUE TO SCALE THE OUTPUT ~12 <> ~20 = High <> Low Amplification.
 
-if (FSignalR >= PeakR && PulseR == false){  // heart beat causes ADC readings to surge down in value. 
-  PeakR = FSignalR;                        // finding the moment when the downward pulse starts
-  peakTimeR = sampleCounter;              // recodrd the time to derive HRV.
- 
+if (FSignalR >= PeakR && PulseR == false){  // heart beat causes ADC readings to surge down in value.
+ PeakR = FSignalR;                        // finding the moment when the downward pulse starts
+ peakTimeR = sampleCounter;              // recodrd the time to derive HRV.
+
 }
-if (FSignalL >= PeakL && PulseL == false){  // heart beat causes ADC readings to surge down in value. 
-  PeakL = FSignalL;                        // finding the moment when the downward pulse starts
-  peakTimeL = sampleCounter;              // recodrd the time to derive HRV.
+if (FSignalL >= PeakL && PulseL == false){  // heart beat causes ADC readings to surge down in value.
+ PeakL = FSignalL;                        // finding the moment when the downward pulse starts
+ peakTimeL = sampleCounter;              // recodrd the time to derive HRV.
 }
 //  NOW IT'S TIME TO LOOK FOR THE HEART BEAT
 
 
 // RIGHT player
 if (sampleCycle ==10){// only look for the beat every 20mS. This clears out alot of high frequency noise.
-       //Only turn pump off once per beat
-    if (pumpFlagR == true)
-    {
-          pumpBeatR++;
+      //Only turn pump off once per beat
+   if (pumpFlagR == true)
+   {
+         pumpBeatR++;
+   }
+   if (pumpBeatR > pumpBeatThreshold - pumpThresholdShorten)
+   {
+        digitalWrite(pumpPinR, LOW);
+  }
+  
+     if (pumpBeatR > pumpBeatThreshold)
+     {
+         pumpFlagR = false;
+         pumpBeatR = 0;
+     } 
+ if (FSignalR < 0 && PulseR == false){  // signal surges down in value every time there is a pulse
+     if (PulseR == false)
+     {
+           if (!SHOWRAWDATA)
+           {
+             if (DEBUG) {
+                   Serial.print("Right: ");
+                   Serial.print( SignalR); //For debugging
+                   Serial.print  (" BPM: ");
+                  Serial.println(BPMR);
+             } else {
+                  Serial.write('0');                    // send to processing
+             }
+           }
+           digitalWrite(pumpPinR, HIGH);
+           pumpFlagR = true;
+           pumpBeatR = 0;
     }
-    if (pumpBeatR > pumpBeatThreshold)
-    {
-         digitalWrite(pumpPinR, LOW);
-          pumpFlagR = false;
-          pumpBeatR = 0;
-   }            
-  if (FSignalR < 0 && PulseR == false){  // signal surges down in value every time there is a pulse
-  if (!SHOWRAWDATA)
-  {
-    if (DEBUG) {
-          Serial.print("Right: ");
-          Serial.print( SignalR); //For debugging
-          Serial.print  (" BPM: ");
-         Serial.println(BPMR);
-    } else {
-         Serial.write('0');                    // send to processing
+   PulseR = true;                     // Pulse will stay true as long as pulse signal < 0
+    FadeR = 255;                       // set the fade value to highest for fading LED on pin 11 (optional)
+    HRVR = peakTimeR - lastPeakTimeR;    // measure time between beats
+    lastPeakTimeR = peakTimeR;          // keep track of time for next pulse
+    BR = true;                         // set the Quantified Self flag when HRV gets updated. NOT cleared inside this ISR
+    pumpFlagR = true;
+    rateR += HRVR;                      // add to the running total of HRV used to determine heart rate
+    beatCounterR++;                     // beatCounter times when to calculate bpm by averaging the beat time values
+    if (beatCounterR == 10){            // derive heart rate every 10 beats. adjust as needed
+      rateR /= beatCounterR;             // averaging time between beats
+      BPMR = 60000/rateR;                // how many beats can fit into a minute?
+      beatCounterR = 0;                 // reset counter
+      rateR = 0;                        // reset running total
+      QSR = true;                       // set Beat flag when BPM gets updated. NOT cleared inside this ISR
     }
-  }
-      if (PulseR == false)
-      {
-            digitalWrite(pumpPinR, HIGH);
-            pumpFlagR = true;
-            pumpBeatR = 0;
-     }
-    PulseR = true;                     // Pulse will stay true as long as pulse signal < 0
-     FadeR = 255;                       // set the fade value to highest for fading LED on pin 11 (optional)  
-     HRVR = peakTimeR - lastPeakTimeR;    // measure time between beats
-     lastPeakTimeR = peakTimeR;          // keep track of time for next pulse
-     BR = true;                         // set the Quantified Self flag when HRV gets updated. NOT cleared inside this ISR    
-     pumpFlagR = true;
-     rateR += HRVR;                      // add to the running total of HRV used to determine heart rate
-     beatCounterR++;                     // beatCounter times when to calculate bpm by averaging the beat time values
-     if (beatCounterR == 10){            // derive heart rate every 10 beats. adjust as needed
-       rateR /= beatCounterR;             // averaging time between beats
-       BPMR = 60000/rateR;                // how many beats can fit into a minute?
-       beatCounterR = 0;                 // reset counter
-       rateR = 0;                        // reset running total
-       QSR = true;                       // set Beat flag when BPM gets updated. NOT cleared inside this ISR
-     }
-  }
-  if (FSignalR >= 0 && PulseR == true){    // when the values are going up, it's the time between beats
-    PulseR = false;                      // reset these variables so we can do it again!
-    PeakR = 0;                           //
-  }
+ }
+ if (FSignalR >= 0 && PulseR == true){    // when the values are going up, it's the time between beats
+   PulseR = false;                      // reset these variables so we can do it again!
+   PeakR = 0;                           //
+ }
 }
 
-  // LEFT player
+ // LEFT player
 if (sampleCycle == 20){
-    sampleCycle = 0;
-    if (pumpFlagL == true)
-    {
-          pumpBeatL++;
-    }
-    if (pumpBeatL > pumpBeatThreshold)
-    {
-         digitalWrite(pumpPinL, LOW);
-          pumpFlagL = false;
-          pumpBeatL = 0;
+   sampleCycle = 0;
+   if (pumpFlagL == true)
+   {
+         pumpBeatL++;
    }
-     if (FSignalL < 0 && PulseL == false){  // signal surges down in value every time there is a pulse
-     if (!SHOWRAWDATA)
-     {
-         if (DEBUG) {
-           Serial.print  (" Left: ");
-           Serial.print (SignalL); //Debugging
-           Serial.print  (" BPM: ");
-           Serial.println(BPML);
-         } else {
-           Serial.write('1');                    // send to processing
-         }
-     }
-     if (PulseL == false)
-     {
-           digitalWrite(pumpPinL, HIGH);
-           pumpFlagL = true;
-           pumpBeatL = 0;
-     }
-     PulseL = true;                     // Pulse will stay true as long as pulse signal < 0
-     FadeL = 255;                       // set the fade value to highest for fading LED on pin 11 (optional)  
-     HRVL = peakTimeL - lastPeakTimeL;    // measure time between beats
-     lastPeakTimeL = peakTimeL;          // keep track of time for next pulse
-      BL = true;                         // set the Quantified Self flag when HRV gets updated. NOT cleared inside this ISR    
-     pumpFlagL=true;
-     rateL += HRVL;                      // add to the running total of HRV used to determine heart rate
-     beatCounterL++;                     // beatCounter times when to calculate bpm by averaging the beat time values
-     if (beatCounterL == 10){            // derive heart rate every 10 beats. adjust as needed
-       rateL /= beatCounterL;             // averaging time between beats
-       BPML = 60000/rateL;                // how many beats can fit into a minute?
-       beatCounterL = 0;                 // reset counter
-       rateL = 0;                        // reset running total
-       QSL = true;                       // set Beat flag when BPM gets updated. NOT cleared inside this ISR
-     }
+   if (pumpBeatL > pumpBeatThreshold - pumpThresholdShorten)
+   {
+        digitalWrite(pumpPinL, LOW);
   }
-  if (FSignalL >= 0 && PulseL == true){    // when the values are going up, it's the time between beats
-    PulseL = false;                      // reset these variables so we can do it again!
-    PeakL = 0;
-  }
+  
+     if (pumpBeatL > pumpBeatThreshold)
+     {
+         pumpFlagL = false;
+         pumpBeatL = 0;
+     }       
+    if (FSignalL < 0 && PulseL == false){  // signal surges down in value every time there is a pulse
+
+    if (PulseL == false)
+    {
+          digitalWrite(pumpPinL, HIGH);
+          pumpFlagL = true;
+          pumpBeatL = 0;
+          if (!SHOWRAWDATA)
+            {
+            if (DEBUG) {
+              Serial.print  (" Left: ");
+              Serial.print (SignalL); //Debugging
+              Serial.print  (" BPM: ");
+              Serial.println(BPML);
+            } else {
+              Serial.write('1');                    // send to processing
+            }
+          }
+    }
+    PulseL = true;                     // Pulse will stay true as long as pulse signal < 0
+    FadeL = 255;                       // set the fade value to highest for fading LED on pin 11 (optional)
+    HRVL = peakTimeL - lastPeakTimeL;    // measure time between beats
+    lastPeakTimeL = peakTimeL;          // keep track of time for next pulse
+     BL = true;                         // set the Quantified Self flag when HRV gets updated. NOT cleared inside this ISR
+    pumpFlagL=true;
+    rateL += HRVL;                      // add to the running total of HRV used to determine heart rate
+    beatCounterL++;                     // beatCounter times when to calculate bpm by averaging the beat time values
+    if (beatCounterL == 10){            // derive heart rate every 10 beats. adjust as needed
+      rateL /= beatCounterL;             // averaging time between beats
+      BPML = 60000/rateL;                // how many beats can fit into a minute?
+      beatCounterL = 0;                 // reset counter
+      rateL = 0;                        // reset running total
+      QSL = true;                       // set Beat flag when BPM gets updated. NOT cleared inside this ISR
+    }
+ }
+ if (FSignalL >= 0 && PulseL == true){    // when the values are going up, it's the time between beats
+   PulseL = false;                      // reset these variables so we can do it again!
+   PeakL = 0;
+ }
 }
 
 }// end isr

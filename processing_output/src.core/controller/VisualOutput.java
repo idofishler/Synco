@@ -160,6 +160,7 @@ public class VisualOutput extends PApplet {
 		if (ARDUINO_INPUT_ON) {
 			if (inPort.available() > 0) {
 				byte inChar = (byte) inPort.read();
+				//System.out.println(inChar);
 				inPort.clear();
 
 				if (inChar == '0') {
@@ -215,12 +216,12 @@ public class VisualOutput extends PApplet {
 	}
 
 	private void reset() {
-		if (ARDUINO_INPUT_ON) {
-			inPort.write('R');
-		}
-		if (ARDUINO_OUTPUT_ON) {
-			outPort.write('R');
-		}
+//		if (ARDUINO_INPUT_ON) {
+//			inPort.write('R');
+//		}
+//		if (ARDUINO_OUTPUT_ON) {
+//			outPort.write('R');
+//		}
 		mainController.init();
 		initRecording();
 		

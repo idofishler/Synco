@@ -23,7 +23,7 @@ public class Recorder {
 		}
 
 		gameId = String.valueOf(System.currentTimeMillis());
-
+		pn = 0;
 		initiated = true;
 
 	} 
