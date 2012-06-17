@@ -24,7 +24,6 @@ public class MainModel implements IModel {
 	private long startTime;
 	private int rateThreshold;
 
-
 	/**
 	 * 
 	 */
@@ -71,8 +70,8 @@ public class MainModel implements IModel {
 
 		// keep the water moving...
 		waterModel.update();
-
-		soundModel.update();
+		
+		soundModel.update();			
 	}
 
 	public boolean allPlayersReady() {
