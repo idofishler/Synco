@@ -23,6 +23,7 @@ public class MainModel implements IModel {
 	private SoundModel soundModel;
 	private long startTime;
 	private int rateThreshold;
+	private int lastRead;
 
 	/**
 	 * 
@@ -38,10 +39,14 @@ public class MainModel implements IModel {
 
 	public void init(long startTime) {
 		this.startTime = startTime;
+		this.lastRead = 0;
 		for (int i = 0; i < NO_OF_PLAYERS; i++) {
 			setPersonPos(i, STAGE_WIDTH, STAGE_HEIGHT);
 		}
 		rateThreshold = INIT_RATE_THRESHOLD;
+		for (PersonModel player : players) {
+			player.init();
+		}
 		soundModel.init();
 	}
 
@@ -57,9 +62,9 @@ public class MainModel implements IModel {
 
 		// Make the players closer if the are synced
 		if (allPlayersReady()) {
-			if (areSynced()) {
+			if (areSynced() > 0) {
 				sync();
-			} else {
+			} else if (areSynced() < 0){
 				unsync();
 			}
 		}
@@ -142,7 +147,7 @@ public class MainModel implements IModel {
 		return distance;
 	}
 
-	public boolean areSynced() {
+	public int areSynced() {
 		int rightPlayerRate = players[0].getHeartRate();
 		int leftPlayerRate = players[1].getHeartRate();
 		int rateGap = Math.abs(rightPlayerRate - leftPlayerRate);
@@ -160,9 +165,22 @@ public class MainModel implements IModel {
 		boolean areAlive = players[0].isAlive() && players[1].isAlive();
 
 		if (areAlive && pulseGap < PULSE_THRESHOLD && rateGap < rateThreshold) {
-			return true;
+			if (lastRead != -1) { // synced
+				lastRead = 1;
+				return 1; 
+			} else { // nothing
+				lastRead = 1;
+				return 0; 
+			}
+		} else {
+			if (lastRead != 1) {
+				lastRead = -1;
+				return -1; // not synced
+			} else {
+				lastRead = -1;
+				return 0;
+			}
 		}
-		return false;
 	}
 
 	public void startPlayer(int identifier) {

@@ -14,7 +14,7 @@ public class VisualOutput extends PApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final float DEFAULT_FRAME_RATE = 20;
+	private static final float DEFAULT_FRAME_RATE = 25;
 
 	private static boolean ARDUINO_LEFT_INPUT_ON = false;
 	private static boolean ARDUINO_RIGHT_INPUT_ON = false;
@@ -30,7 +30,7 @@ public class VisualOutput extends PApplet {
 	private static final String IN_RIGHT_PORT_NAMES[] = { 
 		"/dev/tty.usbserial-A600AH19", // Mac OS X
 		"/dev/ttyUSB2", // Linux
-		"COM3", // Windows
+		"COM4", // Windows
 	};
 
 	private static final String OUT_PORT_NAMES[] = { 
@@ -100,6 +100,7 @@ public class VisualOutput extends PApplet {
 			if (inLeftPortName != null) {
 				System.out.println("IN LEFT Sirial port to use: " + inLeftPortName);
 				inLeftPort = new Serial(this, inLeftPortName, 115200);
+				inLeftPort.clear();
 				ARDUINO_LEFT_INPUT_ON = true;
 			}
 			else {
@@ -108,6 +109,7 @@ public class VisualOutput extends PApplet {
 			if (inRightPortName  != null) {
 				System.out.println("IN RIGHT Sirial port to use: " + inRightPortName);
 				inRightPort = new Serial(this, inRightPortName, 115200);
+				inRightPort.clear();
 				ARDUINO_RIGHT_INPUT_ON = true;
 			}
 			else {
@@ -116,6 +118,7 @@ public class VisualOutput extends PApplet {
 			if (outPortName != null) {
 				System.out.println("OUT Serial port to use: " + outPortName);
 				outPort = new Serial(this, outPortName, 9600);
+				outPort.clear();
 				ARDUINO_OUTPUT_ON = true;
 			}
 			else {
@@ -132,52 +135,56 @@ public class VisualOutput extends PApplet {
 
 	public void draw() {
 		if (ARDUINO_OUTPUT_ON) {
-			if (mainController.getModel().areSynced()) {
+			if (mainController.getModel().areSynced() > 0) {
 				//System.out.println("SYNCED");
 				outPort.write('1');				
 			}
-			else {
+			else if (mainController.getModel().areSynced() < 0){
 				//System.out.println("NOT_SYNCED");
 				outPort.write('0');	
 			}
 		}
 		mainController.doUI();
 	}
-	
+
 	public void serialEvent(Serial port) {
-		if (inLeftPort.available() > 0) {
-			String inRightData = port.readStringUntil('\n');  
-			inRightData = trim(inRightData);             // trim the \n off the end
-			if (inRightData.charAt(0) == 'B'){
-				mainController.event(0);
+		if (ARDUINO_LEFT_INPUT_ON && ARDUINO_RIGHT_INPUT_ON) {
+			String inData = port.readStringUntil('\n'); 
+			if (inData != null) {
+				inData = trim(inData);             // trim the \n off the end
+				if (inData.charAt(0) == 'L') {
+					mainController.event(1);
+				}
+				if (inData.charAt(0) == 'R'){
+					mainController.event(0);
+				}
 			}
 		}
-		if (inRightPort.available() > 0) {
-			String inLeftData = port.readStringUntil('\n');  
-			inLeftData = trim(inLeftData);             // trim the \n off the end
-			if (inLeftData.charAt(0) == 'B'){
-				mainController.event(1);
-			}
-		}
-		return;     
 	}
 
-//	private void readSerialInput() {
-//		if (ARDUINO_LEFT_INPUT_ON) {
-//			if (inLeftPort.available() > 0) {
-//				byte inChar = (byte) inLeftPort.read();
-//				//System.out.println(inChar);
-//				inLeftPort.clear();
-//
-//				if (inChar == '0') {
-//					mainController.event(0);
-//				}
-//				if (inChar == '1') {
-//					mainController.event(1);
-//				}
-//			}
-//		}
-//	}
+	private void readSerialInput() {
+		if (ARDUINO_LEFT_INPUT_ON) {
+			String inLeftData = inLeftPort.readStringUntil('\n'); 
+			inLeftPort.clear();
+			if (inLeftData != null) {
+				inLeftData = trim(inLeftData);             // trim the \n off the end
+				if (inLeftData.charAt(0) == 'L'){
+					mainController.event(1);
+				}
+			}
+		}
+		if (ARDUINO_RIGHT_INPUT_ON) {
+			String inRightData = inRightPort.readStringUntil('\n');
+			inRightPort.clear();
+			if (inRightData != null) {
+				inRightData = trim(inRightData);             // trim the \n off the end
+				if (inRightData.charAt(0) == 'R'){
+					mainController.event(0);
+				}
+			}
+		}
+		return; 
+	}
 
 	@Override
 	public void keyPressed() {
@@ -213,10 +220,6 @@ public class VisualOutput extends PApplet {
 			mainController.getModel().getSoundModel().stop();
 			exit();
 		}
-		if (key == ESC) {
-			mainController.getModel().getSoundModel().stop();
-			exit();
-		}
 	}
 
 	private void doShare() {
@@ -226,12 +229,7 @@ public class VisualOutput extends PApplet {
 	}
 
 	private void reset() {
-		//		if (ARDUINO_INPUT_ON) {
-		//			inPort.write('R');
-		//		}
-		//		if (ARDUINO_OUTPUT_ON) {
-		//			outPort.write('R');
-		//		}
+
 		mainController.init();
 		initRecording();
 

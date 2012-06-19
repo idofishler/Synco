@@ -7,9 +7,10 @@ public class PersonModel implements IModel {
 	private static final int MIN_HEART_RATE = 30;
 	private static final int MAX_HEART_RATE = 150;
 	
-	private static final int BEATS_TO_STORE = 10;
+	private static final int BEATS_TO_STORE = 15;
 	private static final long START_DELAY = 12 * 1000;
-	private static final long MAX_TIME_BTWEEN_BITS = 3 * 1000;
+	private static final long MAX_TIME_BTWEEN_BITS = 3 * 1000;  // this is for isAlive()
+	private static final long MIN_TIME_BETWEEN_BEATS = 150; // This is to ignore noise
 
 	private String name;
 	private int heartRate;
@@ -17,7 +18,8 @@ public class PersonModel implements IModel {
 	private float pulseStrangth;
 	private int gamePos;
 
-	private ArrayList<Long> timeBetweenBeats;
+	private long[] timeBetweenBeats;
+	private int index;
 	long lastBeat;
 
 	private int centerX;
@@ -33,8 +35,15 @@ public class PersonModel implements IModel {
 		gamePos = pos;
 		this.ready = false;
 
-		timeBetweenBeats = new ArrayList<Long>();
+		timeBetweenBeats = new long[BEATS_TO_STORE];
 		lastBeat = 0;
+	}
+
+	public void init() {
+		for (int i = 0; i < timeBetweenBeats.length; i++) {
+			timeBetweenBeats[i] = 0;
+		}
+		index = 0;
 	}
 
 	@Override
@@ -51,11 +60,14 @@ public class PersonModel implements IModel {
 	}
 
 	public void beat() {
-		timeBetweenBeats.add(System.currentTimeMillis() - lastBeat);
+		long delta = System.currentTimeMillis() - lastBeat;
+		if (delta < MIN_TIME_BETWEEN_BEATS) {
+			return;
+		}
+		timeBetweenBeats[index] = delta;
+		index = (index + 1) % BEATS_TO_STORE;
 		lastBeat = System.currentTimeMillis();
-	
-		if (timeBetweenBeats.size() > BEATS_TO_STORE) 
-			timeBetweenBeats.remove(0);
+
 	}
 
 	/**
@@ -121,11 +133,11 @@ public class PersonModel implements IModel {
 
 		double total = 0;
 
-		for (double t : timeBetweenBeats) {
-			total += t;
+		for (int i = 0; i < timeBetweenBeats.length; i++) {
+			total += timeBetweenBeats[i];
 		}
 
-		double average = total / timeBetweenBeats.size();
+		double average = total / timeBetweenBeats.length;
 		heartRate = (int) (60 / (average / 1000));
 
 		return isAlive()? heartRate: 0;
